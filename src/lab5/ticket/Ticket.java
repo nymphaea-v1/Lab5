@@ -5,12 +5,12 @@ import java.util.Date;
 
 public class Ticket implements CSVConvertible, Comparable<Ticket> {
     private long id;
-    private String name;
-    private Coordinates coordinates;
-    private Date creationDate;
-    private int price;
-    private TicketType type;
-    private Person person;
+    private final String name;
+    private final Coordinates coordinates;
+    private final Date creationDate;
+    private final int price;
+    private final TicketType type;
+    private final Person person;
 
     protected Ticket(Long id, String name, Coordinates coordinates, Date creationDate, int price, TicketType type, Person person) {
         this.id = id;

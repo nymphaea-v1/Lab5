@@ -9,7 +9,7 @@ public class Clear extends SimpleCommand {
 
     @Override
     protected void execute() {
-        CollectionManager.clearCollection();
+        CollectionManager.clear();
 
         System.out.println("Collection has been cleared");
     }

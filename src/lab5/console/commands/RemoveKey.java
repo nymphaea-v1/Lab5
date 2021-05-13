@@ -13,7 +13,7 @@ public class RemoveKey extends ComplexCommand {
         try {
             Long key = Long.parseLong(argument);
 
-            if (CollectionManager.removeElement(key) == null) {
+            if (!CollectionManager.removeElement(key)) {
                 throw new IncorrectArgumentException("no elements with that key found");
             }
 

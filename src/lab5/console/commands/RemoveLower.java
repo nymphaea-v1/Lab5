@@ -5,19 +5,19 @@ import lab5.exceptions.IncorrectArgumentException;
 
 import java.util.ArrayList;
 
-public class RemoveGreater extends ComplexCommand {
-    protected RemoveGreater() {
-        super("remove_greater", "remove_greater description", "remove_greater {element}");
+public class RemoveLower extends ComplexCommand {
+    protected RemoveLower() {
+        super("remove_lower", "remove_lower description", "remove_lower {element}");
     }
 
     @Override
     void execute(String argument) throws IncorrectArgumentException {
         try {
             long key = Long.parseLong(argument);
-            ArrayList<Long> keySetToRemove = CollectionManager.getGreaterOrLower(key, true);
+            ArrayList<Long> keySetToRemove = CollectionManager.getGreaterOrLower(key, false);
 
             if (keySetToRemove.isEmpty()) {
-                System.out.println("There are no greater elements");
+                System.out.println("There are no lower elements");
                 return;
             }
 

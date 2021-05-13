@@ -20,9 +20,11 @@ public class CommandManager {
         setCommand(new Show());
         setCommand(new Clear());
         setCommand(new Exit());
+        setCommand(new Save());
 
         setCommand(new RemoveKey());
         setCommand(new RemoveGreater());
+        setCommand(new RemoveLower());
     }
 
     public static void executeCommand(String commandString) throws NoSuchCommandException {

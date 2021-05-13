@@ -1,72 +1,85 @@
 package lab5;
 
 import lab5.exceptions.IncorrectFieldException;
-import lab5.exceptions.IncorrectFileException;
 import lab5.ticket.Ticket;
 import lab5.ticket.TicketManager;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class CollectionManager {
-    private static LinkedHashMap<Long, Ticket> collection;
-    private static Date initDate;
-
-    public static Boolean isInitiated() {
-        return (collection != null);
-    }
-
-    public static Date getInitDate() {
-        return initDate;
-    }
-
-    public static Set<Long> getKeySet() {
-        return collection.keySet();
-    }
+    private static final LinkedHashMap<Long, Ticket> collection = new LinkedHashMap<>();
+    private static String filePath;
+    private static long creationDate;
+    private static long lastModifiedDate;
 
     public static int getSize() {
         return collection.size();
     }
 
-    public static long getId(Long key) {
-        return collection.get(key).getId();
+    public static String getFilePath() {
+        return filePath;
     }
 
-    public static void initialize(ArrayList<String> fields) throws IncorrectFileException {
-        collection = new LinkedHashMap<>();
+    public static long getCreationDate() {
+        return creationDate;
+    }
+
+    public static long getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public static void initialize(String filePath) throws IOException {
+        CollectionManager.filePath = filePath;
+        long[] fileAttributes = FileManager.getFileDates(filePath);
+        creationDate = fileAttributes[0];
+        lastModifiedDate = fileAttributes[1];
+
+        ArrayList<String> fields = FileManager.readFile(filePath);
+
         for (int i = 0; i < fields.size(); i++) {
             try {
                 Ticket ticket = TicketManager.createTicket(fields.get(i).split(","));
                 collection.put(ticket.getId(), ticket);
             } catch (IncorrectFieldException e) {
-                System.out.println(e.getMessage() + ". Line " + (i+1) + " was skipped");
+                System.out.printf("%s. Line %d was skipped%n", e.getMessage(), i + 1);
             }
         }
 
-        if (collection.isEmpty()) throw new IncorrectFileException("No lines was found");
+        sort();
 
-        initDate = new Date();
-
-        System.out.println("Collection was initialized " + initDate);
+        System.out.printf("Collection with %d elements was initialized%n", getSize());
     }
 
-    public static Ticket removeElement(Long key) {
-        return (collection.remove(key));
+    public static ArrayList<Long> getGreaterOrLower(long id, boolean greater) {
+        ArrayList<Long> keyList = new ArrayList<>();
+        Set<Map.Entry<Long, Ticket>> set = collection.entrySet();
+
+        for (Map.Entry<Long, Ticket> next : set) {
+            if (next.getValue().getId() == id) {
+                greater = !greater;
+            } else if (greater) {
+                keyList.add(next.getKey());
+            }
+        }
+
+        return keyList;
+    }
+
+    public static boolean removeElement(Long key) {
+        return collection.remove(key) != null;
     }
 
     public static void removeElements(ArrayList<Long> keyList) {
-        for (long key : keyList) {
-            removeElement(key);
-        }
+        for (long key : keyList) removeElement(key);
     }
 
-    public static void clearCollection() {
-        collection = new LinkedHashMap<>();
+    public static void clear() {
+        collection.clear();
     }
 
     public static String convertToString() {
-        StringBuilder stringBuilder = new StringBuilder(collection.size() * 200);
+        StringBuilder stringBuilder = new StringBuilder(getSize() * 200);
         for (long key : collection.keySet()) {
             stringBuilder.append(key);
             stringBuilder.append(": ");
@@ -77,30 +90,28 @@ public class CollectionManager {
         return stringBuilder.toString().trim();
     }
 
-    public static void writeCSV(String filepath) throws IOException {
-        FileManager.writeNewFile(filepath, convertToCSV());
+    public static void save() throws IOException {
+        FileManager.writeNewFile(filePath, convertToCSV());
 
-        System.out.println("Collection has been saved in the file: " + filepath);
+        lastModifiedDate = new Date().getTime();
     }
 
-    private static ArrayList<String> convertToCSV() {
-        ArrayList<String> result = new ArrayList<>();
-        for (Ticket ticket : collection.values()) result.add(TicketManager.toCSV(ticket));
+    private static void sort() {
+        List<Ticket> ticketCollection = new ArrayList<>(collection.values());
+        Collections.sort(ticketCollection);
 
-        return result;
+        clear();
+        for (Ticket ticket : ticketCollection) collection.put(ticket.getId(), ticket);
     }
 
-    public static ArrayList<Long> getGreaterOrLower(long id, boolean greater) {
-        ArrayList<Long> keyList = new ArrayList<>();
-        Ticket ticket = collection.get(id);
+    private static String convertToCSV() {
+        StringBuilder stringBuilder = new StringBuilder(getSize() * 100);
 
-        int value = greater ? 1 : -1;
-
-        for (long key : collection.keySet()) {
-            Ticket ticketToCompare = collection.get(key);
-            if (ticket.compareTo(ticketToCompare) == value) keyList.add(ticketToCompare.getId());
+        for (Ticket ticket : collection.values()) {
+            stringBuilder.append(TicketManager.toCSV(ticket));
+            stringBuilder.append("\n");
         }
 
-        return keyList.isEmpty() ? null : keyList;
+        return stringBuilder.toString().trim();
     }
 }

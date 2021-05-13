@@ -2,6 +2,8 @@ package lab5.console.commands;
 
 import lab5.CollectionManager;
 
+import java.util.Date;
+
 class Info extends SimpleCommand {
     protected Info() {
         super("info", "info command description");
@@ -11,7 +13,8 @@ class Info extends SimpleCommand {
     protected void execute() {
         System.out.println("Info about this collection:\n" +
                 "Type: LinkedHashMap,\n" +
-                "Initialization time: " + CollectionManager.getInitDate() + ",\n" +
+                "Creation date: " + new Date(CollectionManager.getCreationDate()) + ",\n" +
+                "Last modified date: " + new Date(CollectionManager.getLastModifiedDate()) + ",\n" +
                 "Number of elements: " + CollectionManager.getSize() + ".\n" +
                 "Type show to see all of the elements");
     }
