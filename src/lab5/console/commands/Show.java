@@ -9,6 +9,8 @@ public class Show extends SimpleCommand {
 
     @Override
     protected void execute() {
-        System.out.println("All elements of the collection:\n" + CollectionManager.convertToString());
+        System.out.println(CollectionManager.getSize() == 0
+                ? "Collection is empty"
+                : "All elements of the collection:\n" + CollectionManager.convertToString().trim());
     }
 }

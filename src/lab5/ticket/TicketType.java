@@ -1,8 +1,8 @@
 package lab5.ticket;
 
-enum TicketType {
+public enum TicketType {
     VIP,
     USUAL,
     BUDGETARY,
-    CHEAP;
+    CHEAP
 }

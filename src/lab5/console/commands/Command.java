@@ -1,7 +1,5 @@
 package lab5.console.commands;
 
-import lab5.exceptions.IncorrectArgumentException;
-
 abstract class Command {
     protected String name;
     protected String description;

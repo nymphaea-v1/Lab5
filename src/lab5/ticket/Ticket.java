@@ -2,9 +2,8 @@ package lab5.ticket;
 
 import java.util.Date;
 
-
 public class Ticket implements CSVConvertible, Comparable<Ticket> {
-    private long id;
+    private final long id;
     private final String name;
     private final Coordinates coordinates;
     private final Date creationDate;
@@ -22,21 +21,12 @@ public class Ticket implements CSVConvertible, Comparable<Ticket> {
         this.person = person;
     }
 
-    protected Ticket(String name, Coordinates coordinates, Date creationDate, int price, TicketType type, Person person) {
-        this.name = name;
-        this.coordinates = coordinates;
-        this.creationDate = creationDate;
-        this.price = price;
-        this.type = type;
-        this.person = person;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
     public long getId() {
         return id;
+    }
+
+    private String getName() {
+        return name;
     }
 
     @Override
@@ -58,6 +48,6 @@ public class Ticket implements CSVConvertible, Comparable<Ticket> {
 
     @Override
     public int compareTo(Ticket ticket) {
-        return creationDate.compareTo(ticket.getCreationDate());
+        return name.compareTo(ticket.getName());
     }
 }

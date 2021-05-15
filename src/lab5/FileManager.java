@@ -12,7 +12,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
 public class FileManager {
     public static ArrayList<String> readFile(String filepath) throws FileNotFoundException {
         ArrayList<String> result = new ArrayList<>();
@@ -32,13 +31,15 @@ public class FileManager {
         outputStreamWriter.close();
     }
 
-    public static long[] getFileDates(String filepath) throws IOException {
-        Path file = Paths.get(filepath);
+    public static long[] getFileTimeStamps(String filePath) throws IOException {
+        Path file = Paths.get(filePath);
         BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
 
-        long creationTime = attributes.creationTime().toMillis();
-        long lastModifiedTime = attributes.lastModifiedTime().toMillis();
+        long[] result = new long[2];
 
-        return new long[] {creationTime, lastModifiedTime};
+        result[0] = attributes.creationTime().toMillis();
+        result[1] = attributes.lastModifiedTime().toMillis();
+
+        return result;
     }
 }

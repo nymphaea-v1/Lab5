@@ -1,7 +1,7 @@
 package lab5.console.commands;
 
-import lab5.exceptions.IncorrectArgumentException;
 import lab5.exceptions.NoSuchCommandException;
+import lab5.exceptions.UnreadableInputException;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +25,7 @@ public class CommandManager {
         setCommand(new RemoveKey());
         setCommand(new RemoveGreater());
         setCommand(new RemoveLower());
+        setCommand(new Insert());
     }
 
     public static void executeCommand(String commandString) throws NoSuchCommandException {
@@ -40,12 +41,12 @@ public class CommandManager {
     private static void executeComplexCommand(ComplexCommand command, String argument) {
         try {
             command.execute(argument);
-        } catch (IncorrectArgumentException e) {
+        } catch (UnreadableInputException e) {
             System.out.println(e.getMessage());
 
             String newParameters = new Scanner(System.in).nextLine();
             if (newParameters.equals("-1")) {
-                System.out.println("Current command execution was stopped");
+                System.out.println("Current command execution was cancelled");
                 return;
             }
             executeComplexCommand(command, newParameters.equals("") ? null : newParameters);

@@ -1,8 +1,8 @@
 package lab5.ticket;
 
 class Coordinates {
-    private Long x;
-    private Integer y;
+    private final Long x;
+    private final Integer y;
 
     protected Coordinates(Long x, Integer y) {
         this.y = y;

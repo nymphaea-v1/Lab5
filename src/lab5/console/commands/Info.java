@@ -13,8 +13,8 @@ class Info extends SimpleCommand {
     protected void execute() {
         System.out.println("Info about this collection:\n" +
                 "Type: LinkedHashMap,\n" +
-                "Creation date: " + new Date(CollectionManager.getCreationDate()) + ",\n" +
-                "Last modified date: " + new Date(CollectionManager.getLastModifiedDate()) + ",\n" +
+                "Creation date: " + new Date(CollectionManager.getCreateTimeStamp()) + ",\n" +
+                "Last modified date: " + new Date(CollectionManager.getUpdateTimeStamp()) + ",\n" +
                 "Number of elements: " + CollectionManager.getSize() + ".\n" +
                 "Type show to see all of the elements");
     }
