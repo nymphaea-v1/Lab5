@@ -2,11 +2,15 @@ package lab5.ticket;
 
 import java.time.LocalDate;
 
-class Person implements CSVConvertible {
+public class Person implements CSVConvertible {
     private final LocalDate birthday;
     private final double height;
     private final int weight;
     private final String passportID;
+
+    public String getPassportID() {
+        return passportID;
+    }
 
     protected Person(LocalDate birthday, double height, int weight, String passportID) {
         this.birthday = birthday;
@@ -27,5 +31,11 @@ class Person implements CSVConvertible {
     @Override
     public String toCSV() {
         return birthday + ", " + height + ", " + weight + ", " + passportID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Person)) return false;
+        else return passportID.equals(((Person) o).getPassportID());
     }
 }

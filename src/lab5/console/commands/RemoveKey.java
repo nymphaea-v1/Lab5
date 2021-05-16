@@ -13,11 +13,9 @@ public class RemoveKey extends ComplexCommand {
         try {
             Integer key = Integer.parseInt(argument);
 
-            if (!CollectionManager.removeElement(key)) {
-                throw new UnreadableInputException("no elements with that key found");
-            }
+            if (!CollectionManager.removeElement(key)) throw new UnreadableInputException("no elements with that key found");
 
-            System.out.println("Element with key " + argument + " was removed");
+            System.out.printf("Element with key %d was removed%n", key);
         } catch (NumberFormatException | NullPointerException e) {
             throw new UnreadableInputException(argument + " is not a valid key");
         }

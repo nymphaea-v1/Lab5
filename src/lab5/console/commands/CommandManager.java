@@ -1,5 +1,6 @@
 package lab5.console.commands;
 
+import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.NoSuchCommandException;
 import lab5.exceptions.UnreadableInputException;
 
@@ -19,12 +20,19 @@ public class CommandManager {
         setCommand(new Info());
         setCommand(new Show());
         setCommand(new Clear());
-        setCommand(new Exit());
         setCommand(new Save());
+        setCommand(new Exit());
 
         setCommand(new RemoveKey());
+        setCommand(new RemoveLowerKey());
+        setCommand(new CountByType());
+        setCommand(new FilterStartsWithName());
+
+        setCommand(new Update());
         setCommand(new RemoveGreater());
         setCommand(new RemoveLower());
+        setCommand(new RemoveAnyByPerson());
+
         setCommand(new Insert());
     }
 
@@ -33,22 +41,23 @@ public class CommandManager {
         Command command = commandMap.get(decodedCommand[0]);
         String argument = decodedCommand[1];
 
-        if (command instanceof ComplexCommand) {
-            executeComplexCommand((ComplexCommand) command, argument);
-        } else ((SimpleCommand) command).execute();
+        try {
+            if (command instanceof ComplexCommand) executeComplexCommand((ComplexCommand) command, argument);
+            else ((SimpleCommand) command).execute();
+        } catch (CancelCommandException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    private static void executeComplexCommand(ComplexCommand command, String argument) {
+    private static void executeComplexCommand(ComplexCommand command, String argument) throws CancelCommandException {
         try {
             command.execute(argument);
         } catch (UnreadableInputException e) {
             System.out.println(e.getMessage());
 
             String newParameters = new Scanner(System.in).nextLine();
-            if (newParameters.equals("-1")) {
-                System.out.println("Current command execution was cancelled");
-                return;
-            }
+            if (newParameters.equals("-1")) throw new CancelCommandException();
+
             executeComplexCommand(command, newParameters.equals("") ? null : newParameters);
         }
     }

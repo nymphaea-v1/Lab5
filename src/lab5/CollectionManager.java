@@ -65,7 +65,7 @@ public class CollectionManager {
 
                 collection.put(key++, ticket);
             } catch (IncorrectFieldException | RepeatingException e) {
-                System.out.printf("%s. Line %d was skipped%n", e.getMessage(), key + 1);
+                System.out.printf("%s. Line %d was skipped%n", e.getMessage(), ++key);
             }
         }
 
@@ -73,21 +73,41 @@ public class CollectionManager {
 
         System.out.printf("Collection with %d elements was initialized%n", getSize());
     }
-    
-    public static Set<Integer> filterByTicketBoundary(Ticket ticket, boolean isUpper) {
-        Set<Integer> keyList = new HashSet<>();
 
-        if (isUpper) {
-            for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
-                if (entry.getValue().compareTo(ticket) > 0) keyList.add(entry.getKey());
-            }
-        } else {
-            for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
-                if (entry.getValue().compareTo(ticket) < 0) keyList.add(entry.getKey());
-            }
+    public static Integer getKeyById(long id) {
+        if (!containsId(id)) return null;
+
+        Integer key = null;
+
+        for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
+            if (entry.getValue().getId() == id) key = entry.getKey();
         }
 
-        return keyList;
+        return key;
+    }
+
+    public interface EntryFilter {
+        boolean isValid(Map.Entry<Integer, Ticket> entry);
+    }
+
+    public static Set<Integer> getKeySet(EntryFilter entryFilter) {
+        Set<Integer> keySet = new HashSet<>();
+
+        for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
+            if (entryFilter.isValid(entry)) keySet.add(entry.getKey());
+        }
+
+        return keySet;
+    }
+
+    public static Set<Ticket> getValueSet(EntryFilter entryFilter) {
+        Set<Ticket> valueSet = new HashSet<>();
+
+        for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
+            if (entryFilter.isValid(entry)) valueSet.add(entry.getValue());
+        }
+
+        return valueSet;
     }
 
     public static boolean removeElement(Integer key) {

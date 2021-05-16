@@ -17,10 +17,6 @@ public class Main {
 
         CommandManager.setCommands();
         ConsoleManager.run();
-
-//        String n = "CHEAP1 , []";
-//        System.out.println(Arrays.asList(Arrays.toString(TicketType.values()).replaceAll("^.|.$", "").split(", ")).contains(n));
-//        System.out.println(Arrays.toString(TicketType.values()).contains(n) && n.matches("[^(\\W|\\d)]+"));
     }
 
 }

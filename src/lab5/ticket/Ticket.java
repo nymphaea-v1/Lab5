@@ -25,9 +25,18 @@ public class Ticket implements CSVConvertible, Comparable<Ticket> {
         return id;
     }
 
-    private String getName() {
+    public String getName() {
         return name;
     }
+
+    public TicketType getType() {
+        return type;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
 
     @Override
     public String toString() {

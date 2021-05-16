@@ -10,19 +10,23 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+// TicketBuilder?
 public class TicketManager {
-    private static Long idCount = 0L;
-
     public static Ticket createTicket(String[] ticketFields) {
-        Long id = Long.valueOf(ticketFields[0]);
+        String idString = ticketFields[0];
+        long id = idString == null ? (long) (Math.random() * 1000000000) : Long.parseLong(idString);
+
         String name = ticketFields[1];
 
         Long x = Long.valueOf(ticketFields[2]);
         Integer y = Integer.valueOf(ticketFields[3]);
         Coordinates coordinates = new Coordinates(x, y);
 
-        Date creationDate = new Date(Long.parseLong(ticketFields[4]));
+        String creationDateString = ticketFields[4];
+        Date creationDate = new Date(creationDateString == null ? System.currentTimeMillis() : Long.parseLong(creationDateString));
+
         int price = Integer.parseInt(ticketFields[5]);
+
         TicketType ticketType = TicketType.valueOf(ticketFields[6]);
 
         LocalDate birthday = LocalDate.parse(ticketFields[7]);
@@ -38,7 +42,7 @@ public class TicketManager {
         boolean check(String field);
     }
 
-    private static final LinkedHashMap<String,FieldChecker> ticketFieldCheckers = new LinkedHashMap<>();
+    private static final LinkedHashMap<String, FieldChecker> ticketFieldCheckers = new LinkedHashMap<>();
     static {
         ticketFieldCheckers.put("id", n -> Long.parseLong(n) > 0 && !CollectionManager.containsId(Long.parseLong(n)));
         ticketFieldCheckers.put("name", null);
@@ -46,7 +50,7 @@ public class TicketManager {
         ticketFieldCheckers.put("y coordinate", n -> Integer.parseInt(n) <= 907 || Integer.parseInt(n) > 0);
         ticketFieldCheckers.put("creation date", n -> Long.parseLong(n) < System.currentTimeMillis());
         ticketFieldCheckers.put("price", n -> Integer.parseInt(n) > 0);
-        ticketFieldCheckers.put("ticket type", n -> Arrays.toString(TicketType.values()).contains(n) && n.matches("[^(\\W|\\d)]+"));
+        ticketFieldCheckers.put("ticket type", n -> Arrays.stream(TicketType.values()).anyMatch(v -> v.toString().equals(n)));
         ticketFieldCheckers.put("person birthday (YYYY-MM-DD)", n -> LocalDate.parse(n) != null);
         ticketFieldCheckers.put("person height", n -> Double.parseDouble(n) > 0);
         ticketFieldCheckers.put("person weight", n -> Integer.parseInt(n) > 0);
@@ -63,8 +67,8 @@ public class TicketManager {
             ticketFields[fieldCount] = readField(entry.getKey(), entry.getValue());
         }
 
-        ticketFields[0] = String.valueOf(++idCount);
-        ticketFields[4] = String.valueOf(System.currentTimeMillis());
+        ticketFields[0] = null;
+        ticketFields[4] = null;
 
         return ticketFields;
     }
@@ -74,6 +78,25 @@ public class TicketManager {
 
         int fieldCount = 0;
         for (FieldChecker checker : ticketFieldCheckers.values()) checkField(ticketFields[fieldCount++], checker);
+    }
+
+    public static Person createPerson(String[] personFields) {
+        LocalDate birthday = LocalDate.parse(personFields[0]);
+        double height = Double.parseDouble(personFields[1]);
+        int weight = Integer.parseInt(personFields[2]);
+        String passportID = personFields[3];
+
+        return new Person(birthday, height, weight, passportID);
+    }
+    public static String[] readPersonFields() throws CancelCommandException {
+        String[] personFields = new String[4];
+
+        personFields[0] = readField("person birthday (YYYY-MM-DD)", n -> LocalDate.parse(n) != null);
+        personFields[1] = readField("person height", n -> Double.parseDouble(n) > 0);
+        personFields[2] = readField("person weight", n -> Integer.parseInt(n) > 0);
+        personFields[3] = readField("person passport ID", (n) -> n.length() >= 10);
+
+        return personFields;
     }
 
     private static String readField(String target, FieldChecker checker) throws CancelCommandException {
@@ -117,7 +140,7 @@ public class TicketManager {
     }
 
     private static boolean checkEmptyField(String field) {
-        return field == null || field.equals("");
+        return field == null || field.trim().equals("");
     }
 
     public static String toCSV(Ticket ticket) {
