@@ -2,7 +2,7 @@ package lab5.ticket;
 
 import java.time.LocalDate;
 
-public class Person implements CSVConvertible {
+public class Person {
     private final LocalDate birthday;
     private final double height;
     private final int weight;
@@ -28,7 +28,6 @@ public class Person implements CSVConvertible {
                 "passportID: " + passportID + "}";
     }
 
-    @Override
     public String toCSV() {
         return birthday + ", " + height + ", " + weight + ", " + passportID;
     }

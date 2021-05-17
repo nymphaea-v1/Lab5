@@ -5,9 +5,6 @@ import lab5.exceptions.CancelCommandException;
 import lab5.ticket.Ticket;
 import lab5.ticket.TicketManager;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class RemoveGreater extends SimpleCommand {
     protected RemoveGreater() {
         super("remove_greater", "remove_greater description");
@@ -16,17 +13,10 @@ public class RemoveGreater extends SimpleCommand {
     @Override
     protected void execute() throws CancelCommandException {
         Ticket ticket = TicketManager.createTicket(TicketManager.readTicketFields());
-        Set<Integer> keySet = new HashSet<>();
+        int sizeBefore = CollectionManager.getSize();
 
-        CollectionManager.getEntrySet().stream()
-                .filter(n -> n.getValue().compareTo(ticket) > 0)
-                .forEach(n -> keySet.add(n.getKey()));
+        CollectionManager.getEntrySet().removeIf(n -> n.getValue().compareTo(ticket) > 0);
 
-        if (keySet.isEmpty()) {
-            System.out.println("There are no greater elements");
-        } else {
-            CollectionManager.removeElements(keySet);
-            System.out.println(keySet.size() + " elements was removed");
-        }
+        System.out.println("Elements removed: " + (sizeBefore - CollectionManager.getSize()));
     }
 }

@@ -12,12 +12,12 @@ class Help extends SimpleCommand {
         Collection<Command> commandCollection = getCommandCollection();
         System.out.println("List of all available commands:");
         for (Command command : commandCollection) {
-            String output = (command instanceof ComplexCommand ? ((ComplexCommand) command).getPattern() : command.getName()) + " - " + command.getDescription();
-            System.out.println(output);
+            String leftPart = command instanceof ComplexCommand ? ((ComplexCommand) command).getPattern() : command.getName();
+            System.out.println(leftPart + " - " + command.getDescription());
         }
     }
 
     private Collection<Command> getCommandCollection() {
-        return CommandManager.getCommandCollection();
+        return CommandManager.getCommands();
     }
 }

@@ -1,11 +1,11 @@
 package lab5.console.commands;
 
 import lab5.CollectionManager;
-import lab5.exceptions.UnreadableInputException;
+import lab5.exceptions.IncorrectInputException;
 import lab5.ticket.Ticket;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class FilterStartsWithName extends ComplexCommand {
     protected FilterStartsWithName() {
@@ -13,20 +13,16 @@ public class FilterStartsWithName extends ComplexCommand {
     }
 
     @Override
-    protected void execute(String argument) throws UnreadableInputException {
+    protected void execute(String argument) throws IncorrectInputException {
         try {
-            Set<Ticket> valueSet = CollectionManager.getValueCollection().stream()
-                    .filter(n -> n.getName().startsWith(argument))
-                    .collect(Collectors.toSet());
-            int valueSetSize = valueSet.size();
+            Collection<Ticket> tickets = new ArrayList<>();
 
-            if (valueSetSize == 0) System.out.printf("There are no elements whose name starts with \"%s\"\n", argument);
-            else {
-                System.out.println("Elements found: " + valueSetSize);
-                valueSet.forEach(System.out::println);
-            }
+            for (Ticket ticket : CollectionManager.getTickets()) if (ticket.getName().startsWith(argument)) tickets.add(ticket);
+
+            System.out.println("Elements found: " + tickets.size());
+            tickets.forEach(System.out::println);
         } catch (NullPointerException e) {
-            throw new UnreadableInputException("empty");
+            throw new IncorrectInputException("empty");
         }
     }
 }

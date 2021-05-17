@@ -1,7 +1,7 @@
 package lab5.console.commands;
 
 import lab5.CollectionManager;
-import lab5.exceptions.UnreadableInputException;
+import lab5.exceptions.IncorrectInputException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,19 +12,16 @@ public class RemoveLowerKey extends ComplexCommand {
     }
 
     @Override
-    protected void execute(String argument) throws UnreadableInputException {
+    protected void execute(String argument) throws IncorrectInputException {
         try {
             Integer key = Integer.parseInt(argument);
-            Set<Integer> keySet = new HashSet<>();
+            int sizeBefore = CollectionManager.getSize();
 
-            CollectionManager.getKeySet().stream()
-                    .filter(n -> n < key)
-                    .forEach(keySet::add);
+            CollectionManager.getEntrySet().removeIf(n -> n.getKey() < key);
 
-            CollectionManager.removeElements(keySet);
-            System.out.println(keySet.size() + " elements was removed");
+            System.out.println("Elements removed: " + (sizeBefore - CollectionManager.getSize()));
         } catch (NumberFormatException | NullPointerException e) {
-            throw new UnreadableInputException(argument + " is not a valid number");
+            throw new IncorrectInputException(argument + " is not a valid number");
         }
     }
 }

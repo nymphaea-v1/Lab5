@@ -14,10 +14,10 @@ public class ConsoleManager {
         isRunning = true;
 
         while (isRunning) {
-            String input = scanner.nextLine();
+            String nexCommand = scanner.nextLine();
 
             try {
-                if (!input.isEmpty()) CommandManager.executeCommand(input);
+                if (!nexCommand.isEmpty()) CommandManager.executeCommand(nexCommand);
             } catch (NoSuchCommandException e) {
                 System.out.println(e.getMessage());
             }
@@ -30,8 +30,8 @@ public class ConsoleManager {
     }
 
     public static String read() {
-        String output = scanner.nextLine();
+        String nextLine = scanner.nextLine().trim();
 
-        return output.equals("") ? null : output;
+        return nextLine.equals("") ? null : nextLine;
     }
 }

@@ -1,17 +1,17 @@
 package lab5.console.commands;
 
+import lab5.console.ConsoleManager;
 import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.NoSuchCommandException;
-import lab5.exceptions.UnreadableInputException;
+import lab5.exceptions.IncorrectInputException;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Scanner;
 
 public class CommandManager {
     private static final HashMap<String, Command> commandMap = new HashMap<>();
 
-    protected static Collection<Command> getCommandCollection() {
+    protected static Collection<Command> getCommands() {
         return commandMap.values();
     }
 
@@ -52,13 +52,13 @@ public class CommandManager {
     private static void executeComplexCommand(ComplexCommand command, String argument) throws CancelCommandException {
         try {
             command.execute(argument);
-        } catch (UnreadableInputException e) {
+        } catch (IncorrectInputException e) {
             System.out.println(e.getMessage());
 
-            String newParameters = new Scanner(System.in).nextLine();
-            if (newParameters.equals("-1")) throw new CancelCommandException();
+            String newParameters = ConsoleManager.read();
+            if (newParameters != null && newParameters.equals("-1")) throw new CancelCommandException();
 
-            executeComplexCommand(command, newParameters.equals("") ? null : newParameters);
+            executeComplexCommand(command, newParameters);
         }
     }
 
@@ -75,9 +75,7 @@ public class CommandManager {
         if (spaceIndex != -1) {
             commandStr = input.substring(0, spaceIndex).toLowerCase();
             argument = input.substring(spaceIndex+1);
-        } else {
-            commandStr = input.toLowerCase();
-        }
+        } else commandStr = input.toLowerCase();
 
         if (!commandMap.containsKey(commandStr)) throw new NoSuchCommandException(commandStr);
 

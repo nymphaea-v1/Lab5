@@ -3,10 +3,10 @@ package lab5.console.commands;
 import lab5.CollectionManager;
 import lab5.exceptions.CancelCommandException;
 import lab5.ticket.Person;
+import lab5.ticket.Ticket;
 import lab5.ticket.TicketManager;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 public class RemoveAnyByPerson extends SimpleCommand {
     protected RemoveAnyByPerson() {
@@ -16,16 +16,16 @@ public class RemoveAnyByPerson extends SimpleCommand {
     @Override
     protected void execute() throws CancelCommandException {
         Person person = TicketManager.createPerson(TicketManager.readPersonFields());
-        Set<Integer> keySet = new HashSet<>();
 
-        CollectionManager.getEntrySet().stream()
-                .filter(n -> n.getValue().getPerson().equals(person))
-                .forEach(n -> keySet.add(n.getKey()));
+        for (Map.Entry<Integer, Ticket> entry : CollectionManager.getEntrySet()) {
+            if (entry.getValue().getPerson().equals(person)) {
+                CollectionManager.removeElement(entry.getKey());
+                System.out.println("One element with that person was removed");
 
-        if (keySet.isEmpty()) System.out.println("There are no elements with that person");
-        else {
-            CollectionManager.removeElement(keySet.toArray(new Integer[0])[0]);
-            System.out.println("One element with that person was removed");
+                return;
+            }
         }
+
+        System.out.println("There are no elements with that person");
     }
 }

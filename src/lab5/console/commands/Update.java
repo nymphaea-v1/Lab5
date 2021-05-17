@@ -2,7 +2,7 @@ package lab5.console.commands;
 
 import lab5.CollectionManager;
 import lab5.exceptions.CancelCommandException;
-import lab5.exceptions.UnreadableInputException;
+import lab5.exceptions.IncorrectInputException;
 import lab5.ticket.TicketManager;
 
 public class Update extends ComplexCommand {
@@ -11,7 +11,7 @@ public class Update extends ComplexCommand {
     }
 
     @Override
-    protected void execute(String argument) throws UnreadableInputException, CancelCommandException {
+    protected void execute(String argument) throws IncorrectInputException, CancelCommandException {
         try {
             long id = Long.parseLong(argument);
             Integer key = CollectionManager.getKeyById(id);
@@ -24,7 +24,7 @@ public class Update extends ComplexCommand {
             CollectionManager.setElement(key, TicketManager.createTicket(TicketManager.readTicketFields()));
             System.out.printf("Element with id %d was updated%n", id);
         } catch (NumberFormatException | NullPointerException e) {
-            throw new UnreadableInputException(argument + " is not a valid id");
+            throw new IncorrectInputException(argument + " is not a valid id");
         }
     }
 }

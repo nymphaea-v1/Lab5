@@ -2,7 +2,7 @@ package lab5.ticket;
 
 import java.util.Date;
 
-public class Ticket implements CSVConvertible, Comparable<Ticket> {
+public class Ticket implements Comparable<Ticket> {
     private final long id;
     private final String name;
     private final Coordinates coordinates;
@@ -41,7 +41,6 @@ public class Ticket implements CSVConvertible, Comparable<Ticket> {
         return person;
     }
 
-
     @Override
     public String toString() {
         return "Ticket{ " +
@@ -54,7 +53,6 @@ public class Ticket implements CSVConvertible, Comparable<Ticket> {
                 ", person: " + person.toString() + "}";
     }
 
-    @Override
     public String toCSV() {
         return id + ", " + name + ", " + coordinates + ", " + creationDate.getTime() + ", " + price + ", " + type + ", " + person.toCSV();
     }

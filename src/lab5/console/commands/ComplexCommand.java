@@ -1,7 +1,7 @@
 package lab5.console.commands;
 
 import lab5.exceptions.CancelCommandException;
-import lab5.exceptions.UnreadableInputException;
+import lab5.exceptions.IncorrectInputException;
 
 abstract class ComplexCommand extends Command {
     protected final String pattern;
@@ -15,5 +15,5 @@ abstract class ComplexCommand extends Command {
         return pattern;
     }
 
-    abstract protected void execute(String argument) throws UnreadableInputException, CancelCommandException;
+    abstract protected void execute(String argument) throws IncorrectInputException, CancelCommandException;
 }

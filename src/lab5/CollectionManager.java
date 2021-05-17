@@ -15,8 +15,8 @@ public class CollectionManager {
     private static long createTimeStamp;
     private static long updateTimeStamp;
 
-    public static int getSize() {
-        return collection.size();
+    public static HashSet<Long> getIdSet() {
+        return idSet;
     }
 
     public static String getFilePath() {
@@ -31,25 +31,21 @@ public class CollectionManager {
         return updateTimeStamp;
     }
 
+    public static int getSize() {
+        return collection.size();
+    }
+
     public static Set<Map.Entry<Integer, Ticket>> getEntrySet() {
         return collection.entrySet();
     }
 
-    public static Set<Integer> getKeySet() {
-        return collection.keySet();
-    }
-
-    public static Collection<Ticket> getValueCollection() {
+    public static Collection<Ticket> getTickets() {
         return collection.values();
     }
 
     public static void setElement(Integer key, Ticket ticket) {
         collection.put(key, ticket);
         idSet.add(ticket.getId());
-    }
-
-    public static boolean containsId(Long id) {
-        return idSet.contains(id);
     }
 
     public static boolean containsKey(Integer key) {
@@ -81,29 +77,21 @@ public class CollectionManager {
             }
         }
 
-        sort();
+        sortByCreationDate();
 
         System.out.printf("Collection with %d elements was initialized%n", getSize());
     }
 
     public static Integer getKeyById(long id) {
-        if (!containsId(id)) return null;
-
-        Integer key = null;
-
         for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
-            if (entry.getValue().getId() == id) key = entry.getKey();
+            if (entry.getValue().getId() == id) return entry.getKey();
         }
 
-        return key;
+        return null;
     }
 
     public static boolean removeElement(Integer key) {
         return collection.remove(key) != null;
-    }
-
-    public static void removeElements(Set<Integer> keyList) {
-        for (Integer key : keyList) removeElement(key);
     }
 
     public static void clear() {
@@ -129,10 +117,10 @@ public class CollectionManager {
         updateTimeStamp = new Date().getTime();
     }
 
-    private static void sort() {
+    private static void sortByCreationDate() {
         LinkedHashMap<Integer, Ticket> collectionClone = new LinkedHashMap<>(collection);
 
-        clear();
+        collection.clear();
 
         collectionClone.entrySet().stream()
                 .sorted(Comparator.comparing(n -> n.getValue().getCreationDate()))

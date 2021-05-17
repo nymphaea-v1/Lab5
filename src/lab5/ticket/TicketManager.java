@@ -3,7 +3,7 @@ package lab5.ticket;
 import lab5.CollectionManager;
 import lab5.console.ConsoleManager;
 import lab5.exceptions.CancelCommandException;
-import lab5.exceptions.UnreadableInputException;
+import lab5.exceptions.IncorrectInputException;
 import lab5.exceptions.IncorrectFieldException;
 
 import java.time.LocalDate;
@@ -44,7 +44,7 @@ public class TicketManager {
 
     private static final LinkedHashMap<String, FieldChecker> ticketFieldCheckers = new LinkedHashMap<>();
     static {
-        ticketFieldCheckers.put("id", n -> Long.parseLong(n) > 0 && !CollectionManager.containsId(Long.parseLong(n)));
+        ticketFieldCheckers.put("id", n -> Long.parseLong(n) > 0 && !CollectionManager.getIdSet().contains(Long.parseLong(n)));
         ticketFieldCheckers.put("name", null);
         ticketFieldCheckers.put("x coordinate", n -> Long.parseLong(n) <= 565 || Long.parseLong(n) > 0);
         ticketFieldCheckers.put("y coordinate", n -> Integer.parseInt(n) <= 907 || Integer.parseInt(n) > 0);
@@ -109,17 +109,17 @@ public class TicketManager {
             try {
                 field = ConsoleManager.read();
 
-                if (field == null) throw new UnreadableInputException("empty field");
+                if (field == null) throw new IncorrectInputException("empty field");
                 if (field.equals("-1")) throw new CancelCommandException();
 
                 try {
                     checkField(field, checker);
                 } catch (IncorrectFieldException e) {
-                    throw new UnreadableInputException(e.getMessage());
+                    throw new IncorrectInputException(e.getMessage());
                 }
 
                 wasRead = true;
-            } catch (UnreadableInputException e) {
+            } catch (IncorrectInputException e) {
                 System.out.println(e.getMessage());
             }
         }
