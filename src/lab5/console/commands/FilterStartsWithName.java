@@ -5,6 +5,7 @@ import lab5.exceptions.UnreadableInputException;
 import lab5.ticket.Ticket;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class FilterStartsWithName extends ComplexCommand {
     protected FilterStartsWithName() {
@@ -14,16 +15,16 @@ public class FilterStartsWithName extends ComplexCommand {
     @Override
     protected void execute(String argument) throws UnreadableInputException {
         try {
-            Set<Ticket> valueSet = CollectionManager.getValueSet(n -> n.getValue().getName().startsWith(argument));
+            Set<Ticket> valueSet = CollectionManager.getValueCollection().stream()
+                    .filter(n -> n.getName().startsWith(argument))
+                    .collect(Collectors.toSet());
             int valueSetSize = valueSet.size();
 
-            if (valueSetSize == 0) {
-                System.out.printf("There are no elements whose name starts with \"%s\"\n", argument);
-                return;
+            if (valueSetSize == 0) System.out.printf("There are no elements whose name starts with \"%s\"\n", argument);
+            else {
+                System.out.println("Elements found: " + valueSetSize);
+                valueSet.forEach(System.out::println);
             }
-
-            System.out.println("Elements found: " + valueSetSize);
-            for (Ticket value : valueSet) System.out.println(value);
         } catch (NullPointerException e) {
             throw new UnreadableInputException("empty");
         }

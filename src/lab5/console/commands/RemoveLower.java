@@ -5,6 +5,7 @@ import lab5.exceptions.CancelCommandException;
 import lab5.ticket.Ticket;
 import lab5.ticket.TicketManager;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class RemoveLower extends SimpleCommand {
@@ -15,14 +16,17 @@ public class RemoveLower extends SimpleCommand {
     @Override
     protected void execute() throws CancelCommandException {
         Ticket ticket = TicketManager.createTicket(TicketManager.readTicketFields());
-        Set<Integer> keySetToRemove = CollectionManager.getKeySet(n -> n.getValue().compareTo(ticket) < 0);
+        Set<Integer> keySet = new HashSet<>();
 
-        if (keySetToRemove.isEmpty()) {
+        CollectionManager.getEntrySet().stream()
+                .filter(n -> n.getValue().compareTo(ticket) < 0)
+                .forEach(n -> keySet.add(n.getKey()));
+
+        if (keySet.isEmpty()) {
             System.out.println("There are no lower elements");
-            return;
+        } else {
+            CollectionManager.removeElements(keySet);
+            System.out.println(keySet.size() + " elements was removed");
         }
-
-        CollectionManager.removeElements(keySetToRemove);
-        System.out.println(keySetToRemove.size() + " elements was removed");
     }
 }

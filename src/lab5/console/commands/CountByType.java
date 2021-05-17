@@ -13,7 +13,9 @@ public class CountByType extends ComplexCommand {
     protected void execute(String argument) throws UnreadableInputException {
         try {
             TicketType ticketType = TicketType.valueOf(argument.toUpperCase());
-            int countByType = CollectionManager.getKeySet(n -> n.getValue().getType().equals(ticketType)).size();
+            long countByType = CollectionManager.getValueCollection().stream()
+                    .filter(n -> n.getType().equals(ticketType))
+                    .count();
 
             System.out.println(countByType == 1
                     ? "1 element of this type was found"

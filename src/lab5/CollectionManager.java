@@ -31,6 +31,18 @@ public class CollectionManager {
         return updateTimeStamp;
     }
 
+    public static Set<Map.Entry<Integer, Ticket>> getEntrySet() {
+        return collection.entrySet();
+    }
+
+    public static Set<Integer> getKeySet() {
+        return collection.keySet();
+    }
+
+    public static Collection<Ticket> getValueCollection() {
+        return collection.values();
+    }
+
     public static void setElement(Integer key, Ticket ticket) {
         collection.put(key, ticket);
         idSet.add(ticket.getId());
@@ -69,7 +81,7 @@ public class CollectionManager {
             }
         }
 
-//        sort();
+        sort();
 
         System.out.printf("Collection with %d elements was initialized%n", getSize());
     }
@@ -84,30 +96,6 @@ public class CollectionManager {
         }
 
         return key;
-    }
-
-    public interface EntryFilter {
-        boolean isValid(Map.Entry<Integer, Ticket> entry);
-    }
-
-    public static Set<Integer> getKeySet(EntryFilter entryFilter) {
-        Set<Integer> keySet = new HashSet<>();
-
-        for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
-            if (entryFilter.isValid(entry)) keySet.add(entry.getKey());
-        }
-
-        return keySet;
-    }
-
-    public static Set<Ticket> getValueSet(EntryFilter entryFilter) {
-        Set<Ticket> valueSet = new HashSet<>();
-
-        for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
-            if (entryFilter.isValid(entry)) valueSet.add(entry.getValue());
-        }
-
-        return valueSet;
     }
 
     public static boolean removeElement(Integer key) {
@@ -141,14 +129,15 @@ public class CollectionManager {
         updateTimeStamp = new Date().getTime();
     }
 
-//    private static void sort() {
-//        LinkedHashMap<Integer, Ticket> newCollection = new LinkedHashMap<>();
-//        collection.entrySet().stream()
-//                .sorted(Map.Entry.comparingByValue())
-//                .forEach(entry -> newCollection.put(entry.getKey(), entry.getValue()));
-//
-//        collection = newCollection;
-//    }
+    private static void sort() {
+        LinkedHashMap<Integer, Ticket> collectionClone = new LinkedHashMap<>(collection);
+
+        clear();
+
+        collectionClone.entrySet().stream()
+                .sorted(Comparator.comparing(n -> n.getValue().getCreationDate()))
+                .forEach(entry -> collection.put(entry.getKey(), entry.getValue()));
+    }
 
     private static String convertToCSV() {
         StringBuilder stringBuilder = new StringBuilder(getSize() * 100);

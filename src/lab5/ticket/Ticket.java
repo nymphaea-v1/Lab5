@@ -29,6 +29,10 @@ public class Ticket implements CSVConvertible, Comparable<Ticket> {
         return name;
     }
 
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
     public TicketType getType() {
         return type;
     }

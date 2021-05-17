@@ -5,6 +5,7 @@ import lab5.exceptions.CancelCommandException;
 import lab5.ticket.Person;
 import lab5.ticket.TicketManager;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class RemoveAnyByPerson extends SimpleCommand {
@@ -14,12 +15,17 @@ public class RemoveAnyByPerson extends SimpleCommand {
 
     @Override
     protected void execute() throws CancelCommandException {
-            Person person = TicketManager.createPerson(TicketManager.readPersonFields());
-            Set<Integer> keySet = CollectionManager.getKeySet(n -> n.getValue().getPerson().equals(person));
-            if (keySet.isEmpty()) System.out.println("There are no elements with that person");
-            else {
-                CollectionManager.removeElement(keySet.toArray(new Integer[0])[0]);
-                System.out.println("One element with that person was removed");
-            }
+        Person person = TicketManager.createPerson(TicketManager.readPersonFields());
+        Set<Integer> keySet = new HashSet<>();
+
+        CollectionManager.getEntrySet().stream()
+                .filter(n -> n.getValue().getPerson().equals(person))
+                .forEach(n -> keySet.add(n.getKey()));
+
+        if (keySet.isEmpty()) System.out.println("There are no elements with that person");
+        else {
+            CollectionManager.removeElement(keySet.toArray(new Integer[0])[0]);
+            System.out.println("One element with that person was removed");
+        }
     }
 }
