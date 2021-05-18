@@ -2,18 +2,17 @@ package lab5.console.commands;
 
 import java.util.Collection;
 
-class Help extends SimpleCommand {
+class Help extends Command {
     protected Help() {
         super("help", "help command description");
     }
 
     @Override
-    protected void execute() {
+    protected void execute(String argument) {
         Collection<Command> commandCollection = getCommandCollection();
         System.out.println("List of all available commands:");
         for (Command command : commandCollection) {
-            String leftPart = command instanceof ComplexCommand ? ((ComplexCommand) command).getPattern() : command.getName();
-            System.out.println(leftPart + " - " + command.getDescription());
+            System.out.println(command.getPattern() + " - " + command.getDescription());
         }
     }
 

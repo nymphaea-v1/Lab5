@@ -17,9 +17,8 @@ public class FileManager {
         ArrayList<String> result = new ArrayList<>();
         Scanner scanner = new Scanner(new File(filepath));
 
-        while (scanner.hasNext()) result.add(scanner.nextLine().replaceAll(" *, *", ","));
-
-        System.out.println("Read file: " + filepath);
+        while (scanner.hasNext()) result.add(scanner.nextLine().trim().replaceAll(" *, *", ","));
+        
         return result;
     }
 

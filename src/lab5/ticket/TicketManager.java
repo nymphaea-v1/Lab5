@@ -1,10 +1,11 @@
 package lab5.ticket;
 
 import lab5.CollectionManager;
-import lab5.console.ConsoleManager;
+import lab5.console.InputManager;
 import lab5.exceptions.CancelCommandException;
-import lab5.exceptions.IncorrectInputException;
+import lab5.exceptions.IncorrectArgumentException;
 import lab5.exceptions.IncorrectFieldException;
+import lab5.exceptions.IncorrectScriptException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -57,14 +58,15 @@ public class TicketManager {
         ticketFieldCheckers.put("person passport ID", (n) -> n.length() >= 10);
     }
 
-    public static String[] readTicketFields() throws CancelCommandException {
+    public static String[] readTicketFields() throws CancelCommandException, IncorrectScriptException {
         String[] ticketFields = new String[11];
 
         int fieldCount = -1;
         for (Map.Entry<String, FieldChecker> entry : ticketFieldCheckers.entrySet()) {
             if (++fieldCount == 0 || fieldCount == 4) continue;
 
-            ticketFields[fieldCount] = readField(entry.getKey(), entry.getValue());
+            String ticketField = readField(entry.getKey(), entry.getValue());
+            ticketFields[fieldCount] = ticketField;
         }
 
         ticketFields[0] = null;
@@ -88,7 +90,7 @@ public class TicketManager {
 
         return new Person(birthday, height, weight, passportID);
     }
-    public static String[] readPersonFields() throws CancelCommandException {
+    public static String[] readPersonFields() throws CancelCommandException, IncorrectScriptException {
         String[] personFields = new String[4];
 
         personFields[0] = readField("person birthday (YYYY-MM-DD)", n -> LocalDate.parse(n) != null);
@@ -99,27 +101,28 @@ public class TicketManager {
         return personFields;
     }
 
-    private static String readField(String target, FieldChecker checker) throws CancelCommandException {
+    private static String readField(String target, FieldChecker checker) throws CancelCommandException, IncorrectScriptException {
         boolean wasRead = false;
         String field = null;
 
-        System.out.printf("Enter %s: ", target);
+        if (InputManager.isConsoleInput()) System.out.printf("Enter %s: ", target);
 
         while (!wasRead) {
-            try {
-                field = ConsoleManager.read();
+            field = InputManager.readLine();
 
-                if (field == null) throw new IncorrectInputException("empty field");
+            try {
+                if (field == null) throw new IncorrectArgumentException("empty field");
                 if (field.equals("-1")) throw new CancelCommandException();
 
                 try {
                     checkField(field, checker);
                 } catch (IncorrectFieldException e) {
-                    throw new IncorrectInputException(e.getMessage());
+                    if (!InputManager.isConsoleInput()) throw new IncorrectScriptException("invalid element: " + field);
+                    throw new IncorrectArgumentException(e.getMessage());
                 }
 
                 wasRead = true;
-            } catch (IncorrectInputException e) {
+            } catch (IncorrectArgumentException e) {
                 System.out.println(e.getMessage());
             }
         }

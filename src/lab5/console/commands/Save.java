@@ -4,13 +4,13 @@ import lab5.CollectionManager;
 
 import java.io.IOException;
 
-public class Save extends SimpleCommand {
+public class Save extends Command {
     protected Save() {
         super("save", "save description");
     }
 
     @Override
-    protected void execute() {
+    protected void execute(String argument) {
         try {
             CollectionManager.save();
             System.out.println("Collection has been saved in the file: " + CollectionManager.getFilePath());

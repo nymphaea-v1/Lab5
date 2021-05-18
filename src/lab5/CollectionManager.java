@@ -43,9 +43,13 @@ public class CollectionManager {
         return collection.values();
     }
 
-    public static void setElement(Integer key, Ticket ticket) {
+    public static boolean setElement(Integer key, Ticket ticket) {
+        if (ticket == null) return false;
+
         collection.put(key, ticket);
         idSet.add(ticket.getId());
+
+        return true;
     }
 
     public static boolean containsKey(Integer key) {
@@ -62,9 +66,11 @@ public class CollectionManager {
 
         int key = 0;
         for (String ticketFieldsString : ticketsFieldsString) {
+            String[] ticketFields = ticketFieldsString.split(",");
+
             try {
-                String[] ticketFields = ticketFieldsString.split(",");
                 TicketManager.checkTicketFields(ticketFields);
+
                 Ticket ticket = TicketManager.createTicket(ticketFields);
 
                 Long id = ticket.getId();
@@ -73,13 +79,13 @@ public class CollectionManager {
 
                 collection.put(key++, ticket);
             } catch (IncorrectFieldException | RepeatingException e) {
-                System.out.printf("%s. Line %d was skipped%n", e.getMessage(), ++key);
+                System.out.printf("%s. Line %d hsa been skipped%n", e.getMessage(), ++key);
             }
         }
 
         sortByCreationDate();
 
-        System.out.printf("Collection with %d elements was initialized%n", getSize());
+        System.out.printf("Collection with %d elements has been initialized%n", getSize());
     }
 
     public static Integer getKeyById(long id) {
