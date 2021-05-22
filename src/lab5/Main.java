@@ -12,7 +12,7 @@ public class Main {
 
             CollectionManager.initialize(filePath);
             CommandManager.setCommands();
-            InputManager.run();
+            InputManager.readCommands();
         } catch (IOException e) {
             System.out.printf("Cannot find specified file (%s)", e.getMessage());
         }

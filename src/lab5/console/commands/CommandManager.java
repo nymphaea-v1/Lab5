@@ -53,52 +53,33 @@ public class CommandManager {
     }
 
     private static void execute(Command command, String argument) throws CancelCommandException {
-        try {
-            command.execute(argument);
-        }  catch (IncorrectArgumentException e) {
-            System.out.println(e.getMessage());
-
-            String newParameters = InputManager.readLine();
-            if (newParameters != null && newParameters.equals("-1")) throw new CancelCommandException();
-
-            execute(command, newParameters);
-        } catch (CancelCommandException e) {
-            System.out.println(e.getMessage());
+        while (true) {
+            try {
+                command.execute(argument);
+                return;
+            }  catch (IncorrectArgumentException e) {
+                argument = InputManager.processIncorrectInput(e.getMessage());
+            }
         }
     }
 
-    public static void executeScript(ArrayList<String> scriptStrings, String filePath) throws NoSuchCommandException, IncorrectScriptException, IncorrectArgumentException, FileNotFoundException {
+    public static void executeScript(ArrayList<String> scriptStrings, String filePath) throws FileNotFoundException, IncorrectScriptException {
         Scanner scanner = new Scanner(new File(filePath));
-        HashSet<String> filePaths = new HashSet<>();
-
-        filePaths.add(filePath);
 
         if (InputManager.isConsoleInput()) {
+            HashSet<String> filePaths = new HashSet<>();
+            filePaths.add(filePath);
+
             checkRecursion(scriptStrings, filePaths);
-
-            InputManager.toFileScanner(scanner);
         }
 
-        while (scanner.hasNext()) {
-            String nextLine = scanner.nextLine();
-
-            if (nextLine.isEmpty()) continue;
-
-            String[] decodedCommand = decodeCommand(nextLine);
-            String commandString = decodedCommand[0];
-            String argument = decodedCommand[1];
-
-            System.out.println("NEXT COMMAND: " + commandString + (argument == null ? "" : (" " + argument)));
-
-            commandMap.get(decodedCommand[0]).execute(decodedCommand[1]);
-        }
+        InputManager.addFileScanner(scanner);
     }
 
-//execute_script s_correct
     private static void checkRecursion(ArrayList<String> scriptStrings, HashSet<String> filePaths) throws IncorrectScriptException {
         for (String scriptString : scriptStrings) {
             if (scriptString.matches("execute_script[ ]+.+")) {
-                String filePath = scriptString.replaceAll("execute_script[ ]+", "");
+                String filePath = scriptString.replaceFirst("execute_script[ ]+", "");
 
                 if (!filePaths.add(filePath)) throw new IncorrectScriptException("recursion");
 

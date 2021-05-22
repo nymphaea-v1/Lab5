@@ -14,9 +14,9 @@ import java.util.Scanner;
 
 public class FileManager {
     public static ArrayList<String> readFile(String filepath) throws FileNotFoundException {
-        ArrayList<String> result = new ArrayList<>();
         Scanner scanner = new Scanner(new File(filepath));
 
+        ArrayList<String> result = new ArrayList<>();
         while (scanner.hasNext()) result.add(scanner.nextLine().trim().replaceAll(" *, *", ","));
         
         return result;
@@ -27,7 +27,6 @@ public class FileManager {
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
 
         outputStreamWriter.write(content);
-        outputStreamWriter.close();
     }
 
     public static long[] getFileTimeStamps(String filePath) throws IOException {
@@ -35,7 +34,6 @@ public class FileManager {
         BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
 
         long[] result = new long[2];
-
         result[0] = attributes.creationTime().toMillis();
         result[1] = attributes.lastModifiedTime().toMillis();
 

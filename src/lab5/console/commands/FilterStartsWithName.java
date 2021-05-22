@@ -17,8 +17,7 @@ public class FilterStartsWithName extends Command {
         if (argument == null) throw new IncorrectArgumentException("no argument");
 
         Collection<Ticket> tickets = new ArrayList<>();
-
-        for (Ticket ticket : CollectionManager.getTickets()) if (ticket.getName().startsWith(argument)) tickets.add(ticket);
+        for (Ticket ticket : CollectionManager.getValues()) if (ticket.getName().startsWith(argument)) tickets.add(ticket);
 
         System.out.println("Elements found: " + tickets.size());
         tickets.forEach(System.out::println);

@@ -10,7 +10,6 @@ public class Clear extends Command {
     @Override
     protected void execute(String argument) {
         CollectionManager.clear();
-
         System.out.println("Collection has been cleared");
     }
 }

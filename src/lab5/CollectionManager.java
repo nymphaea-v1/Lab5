@@ -35,25 +35,33 @@ public class CollectionManager {
         return collection.size();
     }
 
+    public static Integer getKeyById(long id) {
+        for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
+            if (entry.getValue().getId() == id) return entry.getKey();
+        }
+
+        return null;
+    }
+
     public static Set<Map.Entry<Integer, Ticket>> getEntrySet() {
         return collection.entrySet();
     }
 
-    public static Collection<Ticket> getTickets() {
+    public static Collection<Ticket> getValues() {
         return collection.values();
-    }
-
-    public static boolean setElement(Integer key, Ticket ticket) {
-        if (ticket == null) return false;
-
-        collection.put(key, ticket);
-        idSet.add(ticket.getId());
-
-        return true;
     }
 
     public static boolean containsKey(Integer key) {
         return collection.containsKey(key);
+    }
+
+    public static void setElement(Integer key, Ticket ticket) {
+        collection.put(key, ticket);
+        idSet.add(ticket.getId());
+    }
+
+    public static boolean removeElement(Integer key) {
+        return collection.remove(key) != null;
     }
 
     public static void initialize(String filePath) throws IOException {
@@ -62,22 +70,19 @@ public class CollectionManager {
         updateTimeStamp = fileAttributes[1];
         CollectionManager.filePath = filePath;
 
-        ArrayList<String> ticketsFieldsString = FileManager.readFile(filePath);
+        ArrayList<String> ticketsFields = FileManager.readFile(filePath);
 
         int key = 0;
-        for (String ticketFieldsString : ticketsFieldsString) {
-            String[] ticketFields = ticketFieldsString.split(",");
-
+        for (String ticketFields : ticketsFields) {
             try {
-                TicketManager.checkTicketFields(ticketFields);
-
-                Ticket ticket = TicketManager.createTicket(ticketFields);
-
+                HashMap<String, String> parsedTicketFields = TicketManager.parseTicketFields(ticketFields);
+                Ticket ticket = TicketManager.createTicket(parsedTicketFields);
                 Long id = ticket.getId();
+
                 if (idSet.contains(id)) throw new RepeatingException("id " + id);
-                else idSet.add(id);
 
                 collection.put(key++, ticket);
+                idSet.add(id);
             } catch (IncorrectFieldException | RepeatingException e) {
                 System.out.printf("%s. Line %d hsa been skipped%n", e.getMessage(), ++key);
             }
@@ -88,21 +93,15 @@ public class CollectionManager {
         System.out.printf("Collection with %d elements has been initialized%n", getSize());
     }
 
-    public static Integer getKeyById(long id) {
-        for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
-            if (entry.getValue().getId() == id) return entry.getKey();
-        }
-
-        return null;
-    }
-
-    public static boolean removeElement(Integer key) {
-        return collection.remove(key) != null;
-    }
-
     public static void clear() {
         idSet.clear();
         collection.clear();
+    }
+
+    public static void save() throws IOException {
+        FileManager.writeNewFile(filePath, convertToCSV());
+
+        updateTimeStamp = new Date().getTime();
     }
 
     public static String convertToString() {
@@ -117,10 +116,15 @@ public class CollectionManager {
         return stringBuilder.toString();
     }
 
-    public static void save() throws IOException {
-        FileManager.writeNewFile(filePath, convertToCSV());
+    private static String convertToCSV() {
+        StringBuilder stringBuilder = new StringBuilder(getSize() * 100);
 
-        updateTimeStamp = new Date().getTime();
+        for (Ticket ticket : collection.values()) {
+            stringBuilder.append(TicketManager.toCSV(ticket));
+            stringBuilder.append("\n");
+        }
+
+        return stringBuilder.toString();
     }
 
     private static void sortByCreationDate() {
@@ -131,16 +135,5 @@ public class CollectionManager {
         collectionClone.entrySet().stream()
                 .sorted(Comparator.comparing(n -> n.getValue().getCreationDate()))
                 .forEach(entry -> collection.put(entry.getKey(), entry.getValue()));
-    }
-
-    private static String convertToCSV() {
-        StringBuilder stringBuilder = new StringBuilder(getSize() * 100);
-
-        for (Ticket ticket : collection.values()) {
-            stringBuilder.append(TicketManager.toCSV(ticket));
-            stringBuilder.append("\n");
-        }
-
-        return stringBuilder.toString();
     }
 }

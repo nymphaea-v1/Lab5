@@ -5,45 +5,16 @@ import lab5.console.InputManager;
 import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.IncorrectArgumentException;
 import lab5.exceptions.IncorrectFieldException;
-import lab5.exceptions.IncorrectScriptException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
-// TicketBuilder?
 public class TicketManager {
-    public static Ticket createTicket(String[] ticketFields) {
-        String idString = ticketFields[0];
-        long id = idString == null ? (long) (Math.random() * 1000000000) : Long.parseLong(idString);
-
-        String name = ticketFields[1];
-
-        Long x = Long.valueOf(ticketFields[2]);
-        Integer y = Integer.valueOf(ticketFields[3]);
-        Coordinates coordinates = new Coordinates(x, y);
-
-        String creationDateString = ticketFields[4];
-        Date creationDate = new Date(creationDateString == null ? System.currentTimeMillis() : Long.parseLong(creationDateString));
-
-        int price = Integer.parseInt(ticketFields[5]);
-
-        TicketType ticketType = TicketType.valueOf(ticketFields[6]);
-
-        LocalDate birthday = LocalDate.parse(ticketFields[7]);
-        double height = Double.parseDouble(ticketFields[8]);
-        int weight = Integer.parseInt(ticketFields[9]);
-        String passportID = ticketFields[10];
-        Person person = new Person(birthday, height, weight, passportID);
-
-        return new Ticket(id, name, coordinates, creationDate, price, ticketType, person);
-    }
-
-    private interface FieldChecker {
-        boolean check(String field);
-    }
-
     private static final LinkedHashMap<String, FieldChecker> ticketFieldCheckers = new LinkedHashMap<>();
+    private static final HashSet<String> personFieldsNames = new LinkedHashSet<>();
+    private static final HashSet<String> ticketFieldsNames = new LinkedHashSet<>();
+
     static {
         ticketFieldCheckers.put("id", n -> Long.parseLong(n) > 0 && !CollectionManager.getIdSet().contains(Long.parseLong(n)));
         ticketFieldCheckers.put("name", null);
@@ -52,82 +23,108 @@ public class TicketManager {
         ticketFieldCheckers.put("creation date", n -> Long.parseLong(n) < System.currentTimeMillis());
         ticketFieldCheckers.put("price", n -> Integer.parseInt(n) > 0);
         ticketFieldCheckers.put("ticket type", n -> Arrays.stream(TicketType.values()).anyMatch(v -> v.toString().equals(n)));
-        ticketFieldCheckers.put("person birthday (YYYY-MM-DD)", n -> LocalDate.parse(n) != null);
+        ticketFieldCheckers.put("person birthday", n -> LocalDate.parse(n) != null);
         ticketFieldCheckers.put("person height", n -> Double.parseDouble(n) > 0);
         ticketFieldCheckers.put("person weight", n -> Integer.parseInt(n) > 0);
         ticketFieldCheckers.put("person passport ID", (n) -> n.length() >= 10);
+
+        personFieldsNames.add("person birthday");
+        personFieldsNames.add("person height");
+        personFieldsNames.add("person weight");
+        personFieldsNames.add("person passport ID");
+
+        ticketFieldsNames.add("name");
+        ticketFieldsNames.add("x coordinate");
+        ticketFieldsNames.add("y coordinate");
+        ticketFieldsNames.add("price");
+        ticketFieldsNames.add("ticket type");
+        ticketFieldsNames.addAll(personFieldsNames);
     }
 
-    public static String[] readTicketFields() throws CancelCommandException, IncorrectScriptException {
-        String[] ticketFields = new String[11];
+    public static Ticket createTicket(HashMap<String, String> ticketFields) {
+        String idString = ticketFields.get("id");
+        long id = idString == null ? (long) (Math.random() * 1000000000) : Long.parseLong(idString);
 
-        int fieldCount = -1;
+        String name = ticketFields.get("name");
+
+        Long x = Long.valueOf(ticketFields.get("x coordinate"));
+        Integer y = Integer.valueOf(ticketFields.get("y coordinate"));
+        Coordinates coordinates = new Coordinates(x, y);
+
+        String creationDateString = ticketFields.get("creation date");
+        Date creationDate = new Date(creationDateString == null ? System.currentTimeMillis() : Long.parseLong(creationDateString));
+
+        int price = Integer.parseInt(ticketFields.get("price"));
+
+        TicketType ticketType = TicketType.valueOf(ticketFields.get("ticket type"));
+
+        LocalDate birthday = LocalDate.parse(ticketFields.get("person birthday"));
+        double height = Double.parseDouble(ticketFields.get("person height"));
+        int weight = Integer.parseInt(ticketFields.get("person weight"));
+        String passportID = ticketFields.get("person passport ID");
+        Person person = new Person(birthday, height, weight, passportID);
+
+        return new Ticket(id, name, coordinates, creationDate, price, ticketType, person);
+    }
+
+    public static HashMap<String, String> readTicketFields() {
+        return readFields(ticketFieldsNames);
+    }
+
+    public static HashMap<String, String> parseTicketFields(String ticketFields) throws IncorrectFieldException {
+        String[] ticketFieldsArray = ticketFields.split(" *, *");
+        if (ticketFieldsArray.length != 11) throw new IncorrectFieldException("?");
+        HashMap<String, String> parsedTicketFields = new HashMap<>();
+
+        int i = 0;
         for (Map.Entry<String, FieldChecker> entry : ticketFieldCheckers.entrySet()) {
-            if (++fieldCount == 0 || fieldCount == 4) continue;
+            String ticketField = ticketFieldsArray[i++];
 
-            String ticketField = readField(entry.getKey(), entry.getValue());
-            ticketFields[fieldCount] = ticketField;
+            checkField(ticketField, entry.getValue());
+            parsedTicketFields.put(entry.getKey(), ticketField);
         }
 
-        ticketFields[0] = null;
-        ticketFields[4] = null;
-
-        return ticketFields;
+        return parsedTicketFields;
     }
 
-    public static void checkTicketFields(String[] ticketFields) throws IncorrectFieldException {
-        if (ticketFields.length != 11) throw new IncorrectFieldException("?");
-
-        int fieldCount = 0;
-        for (FieldChecker checker : ticketFieldCheckers.values()) checkField(ticketFields[fieldCount++], checker);
-    }
-
-    public static Person createPerson(String[] personFields) {
-        LocalDate birthday = LocalDate.parse(personFields[0]);
-        double height = Double.parseDouble(personFields[1]);
-        int weight = Integer.parseInt(personFields[2]);
-        String passportID = personFields[3];
+    public static Person createPerson(HashMap<String, String> personFields) throws CancelCommandException {
+        LocalDate birthday = LocalDate.parse(personFields.get("person birthday"));
+        double height = Double.parseDouble(personFields.get("person height"));
+        int weight = Integer.parseInt(personFields.get("person weight"));
+        String passportID = personFields.get("person passport ID");
 
         return new Person(birthday, height, weight, passportID);
     }
-    public static String[] readPersonFields() throws CancelCommandException, IncorrectScriptException {
-        String[] personFields = new String[4];
 
-        personFields[0] = readField("person birthday (YYYY-MM-DD)", n -> LocalDate.parse(n) != null);
-        personFields[1] = readField("person height", n -> Double.parseDouble(n) > 0);
-        personFields[2] = readField("person weight", n -> Integer.parseInt(n) > 0);
-        personFields[3] = readField("person passport ID", (n) -> n.length() >= 10);
-
-        return personFields;
+    public static HashMap<String, String> readPersonFields() {
+        return readFields(personFieldsNames);
     }
 
-    private static String readField(String target, FieldChecker checker) throws CancelCommandException, IncorrectScriptException {
-        boolean wasRead = false;
-        String field = null;
+    private static HashMap<String, String> readFields(HashSet<String> fieldsNames) throws CancelCommandException {
+        HashMap<String, String> fields = new HashMap<>();
+        for (String fieldsName : fieldsNames) fields.put(fieldsName, readField(fieldsName, ticketFieldCheckers.get(fieldsName)));
+
+        return fields;
+    }
+
+    private static String readField(String target, FieldChecker checker) throws CancelCommandException {
 
         if (InputManager.isConsoleInput()) System.out.printf("Enter %s: ", target);
+        String field = InputManager.readNext();
 
-        while (!wasRead) {
-            field = InputManager.readLine();
-
+        while (true) {
             try {
-                if (field == null) throw new IncorrectArgumentException("empty field");
-                if (field.equals("-1")) throw new CancelCommandException();
-
                 try {
                     checkField(field, checker);
                 } catch (IncorrectFieldException e) {
-                    if (!InputManager.isConsoleInput()) throw new IncorrectScriptException("invalid element: " + field);
                     throw new IncorrectArgumentException(e.getMessage());
                 }
 
-                wasRead = true;
+                return field;
             } catch (IncorrectArgumentException e) {
-                System.out.println(e.getMessage());
+                field = InputManager.processIncorrectInput(e.getMessage());
             }
         }
-
-        return field;
     }
 
     private static void checkField(String field, FieldChecker checker) throws IncorrectFieldException {
@@ -144,6 +141,10 @@ public class TicketManager {
 
     private static boolean checkEmptyField(String field) {
         return field == null || field.trim().equals("");
+    }
+
+    private interface FieldChecker {
+        boolean check(String field);
     }
 
     public static String toCSV(Ticket ticket) {

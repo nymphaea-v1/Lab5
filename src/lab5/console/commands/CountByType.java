@@ -14,15 +14,16 @@ public class CountByType extends Command {
     protected void execute(String argument) throws IncorrectArgumentException {
         if (argument == null) throw new IncorrectArgumentException("no argument");
 
+        TicketType ticketType;
         try {
-            TicketType ticketType = TicketType.valueOf(argument.toUpperCase());
-            int count = 0;
-
-            for (Ticket ticket : CollectionManager.getTickets()) if (ticket.getType().equals(ticketType)) count++;
-
-            System.out.println("Elements found: " + count);
+            ticketType = TicketType.valueOf(argument.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IncorrectArgumentException(argument + " is not a valid type");
         }
+
+        int count = 0;
+        for (Ticket ticket : CollectionManager.getValues()) if (ticket.getType().equals(ticketType)) count++;
+
+        System.out.println("Elements found: " + count);
     }
 }
