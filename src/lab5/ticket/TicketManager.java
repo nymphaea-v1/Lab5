@@ -1,7 +1,7 @@
 package lab5.ticket;
 
 import lab5.CollectionManager;
-import lab5.console.InputManager;
+import lab5.console.commands.CommandReader;
 import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.IncorrectArgumentException;
 import lab5.exceptions.IncorrectFieldException;
@@ -109,8 +109,8 @@ public class TicketManager {
 
     private static String readField(String target, FieldChecker checker) throws CancelCommandException {
 
-        if (InputManager.isConsoleInput()) System.out.printf("Enter %s: ", target);
-        String field = InputManager.readNext();
+        if (CommandReader.fromConsole) System.out.printf("Enter %s: ", target);
+        String field = CommandReader.nextLine();
 
         while (true) {
             try {
@@ -122,7 +122,7 @@ public class TicketManager {
 
                 return field;
             } catch (IncorrectArgumentException e) {
-                field = InputManager.processIncorrectInput(e.getMessage());
+                field = CommandReader.processIncorrectInput(e.getMessage());
             }
         }
     }

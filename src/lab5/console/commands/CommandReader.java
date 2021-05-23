@@ -1,26 +1,25 @@
-package lab5.console;
+package lab5.console.commands;
 
-import lab5.console.commands.CommandManager;
 import lab5.exceptions.CancelCommandException;
+import lab5.exceptions.IncorrectScriptException;
 import lab5.exceptions.NoSuchCommandException;
 
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 
-public class InputManager {
+public class CommandReader {
     private static final LinkedList<Scanner> scanners = new LinkedList<>();
+    private static final LinkedList<String> filePaths = new LinkedList<>();
+    public static boolean fromConsole = true;
 
-    public static boolean isConsoleInput() {
-        return scanners.size() == 1;
-    }
-
-    public static void readCommands() {
+    public static void startReading() {
         scanners.add(new Scanner(System.in));
 
         while (!scanners.isEmpty()) {
             Scanner scanner = scanners.getLast();
 
-            if (isConsoleInput() || scanner.hasNext()) {
+            if (fromConsole || scanner.hasNext()) {
                 String nextCommand = scanner.nextLine();
 
                 if (nextCommand.isEmpty()) continue;
@@ -29,31 +28,49 @@ public class InputManager {
                     CommandManager.execute(nextCommand);
                 } catch (NoSuchCommandException e) {
                     System.out.println(e.getMessage());
-                    if (!isConsoleInput()) toConsoleInput();
+                    if (!fromConsole) toConsole();
                 }
-            } else scanners.removeLast();
+            } else {
+                scanners.removeLast();
+                filePaths.removeLast();
+
+                if (filePaths.isEmpty()) fromConsole = true;
+            }
         }
     }
 
-    public static void stop() {
+    public static void stopReading() {
         scanners.clear();
+        filePaths.clear();
+
+        fromConsole = true;
     }
 
-    public static String readNext() {
+    public static String nextLine() {
         String nextLine = scanners.getLast().nextLine().trim();
         return nextLine.equals("") ? null : nextLine;
     }
 
-    public static void addFileScanner(Scanner scanner) {
-        scanners.addLast(scanner);
+    public static void addFile(File file) throws FileNotFoundException, IncorrectScriptException {
+        String filePath = file.getAbsolutePath();
+
+        if (filePaths.contains(filePath)) {
+            toConsole();
+            throw new IncorrectScriptException("recursion");
+        }
+
+        scanners.addLast(new Scanner(file));
+        filePaths.addLast(filePath);
+
+        fromConsole = false;
     }
 
     public static String processIncorrectInput(String message) throws CancelCommandException {
-        if (isConsoleInput()) {
+        if (fromConsole) {
             System.out.println(message);
 
             while (true) {
-                String input = readNext();
+                String input = nextLine();
                 if (input == null) {
                     System.out.println("Input can't be empty. Try again or type -1 to cancel:");
                 } else if (input.equals("-1")) {
@@ -61,15 +78,19 @@ public class InputManager {
                 } else return input;
             }
         } else {
-            toConsoleInput();
+            toConsole();
             throw new CancelCommandException(message);
         }
     }
 
-    private static void toConsoleInput() {
+    private static void toConsole() {
         Scanner scanner = scanners.getFirst();
 
         scanners.clear();
+        filePaths.clear();
+
         scanners.add(scanner);
+
+        fromConsole = true;
     }
 }

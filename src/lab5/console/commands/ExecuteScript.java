@@ -1,11 +1,10 @@
 package lab5.console.commands;
 
-import lab5.FileManager;
 import lab5.exceptions.IncorrectArgumentException;
 import lab5.exceptions.IncorrectScriptException;
 
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 public class ExecuteScript extends Command {
 
@@ -18,8 +17,7 @@ public class ExecuteScript extends Command {
         if (filePath == null) throw new IncorrectArgumentException("no argument");
 
         try {
-            ArrayList<String> script = FileManager.readFile(filePath);
-            CommandManager.executeScript(script, filePath);
+            CommandReader.addFile(new File(filePath));
         } catch (FileNotFoundException e) {
             throw new IncorrectArgumentException("cannot find specified file (" + filePath + ")");
         } catch (IncorrectScriptException e) {

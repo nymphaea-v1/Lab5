@@ -1,7 +1,6 @@
 package lab5.console.commands;
 
 import lab5.CollectionManager;
-import lab5.console.InputManager;
 
 import java.util.Date;
 
@@ -17,6 +16,6 @@ class Info extends Command {
                 "Creation date: " + new Date(CollectionManager.getCreateTimeStamp()) + "\n" +
                 "Last modified date: " + new Date(CollectionManager.getUpdateTimeStamp()) + "\n" +
                 "Number of elements: " + CollectionManager.getSize());
-        if (InputManager.isConsoleInput()) System.out.println("Type show to see all of the elements");
+        if (CommandReader.fromConsole) System.out.println("Type show to see all of the elements");
     }
 }

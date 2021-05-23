@@ -1,6 +1,6 @@
 package lab5;
 
-import lab5.console.InputManager;
+import lab5.console.commands.CommandReader;
 import lab5.console.commands.CommandManager;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ public class Main {
 
             CollectionManager.initialize(filePath);
             CommandManager.setCommands();
-            InputManager.readCommands();
+            CommandReader.startReading();
         } catch (IOException e) {
             System.out.printf("Cannot find specified file (%s)", e.getMessage());
         }
