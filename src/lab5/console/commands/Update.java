@@ -4,9 +4,9 @@ import lab5.CollectionManager;
 import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.IncorrectArgumentException;
 
-import lab5.ticket.TicketManager;
+import lab5.ticket.TicketReader;
 
-public class Update extends Command {
+public class  Update extends Command {
     protected Update() {
         super("update", "update description", "update id");
     }
@@ -26,7 +26,7 @@ public class Update extends Command {
 
         if (key == null) throw new IncorrectArgumentException("no elements with specified id found (" + argument + ")");
 
-        CollectionManager.setElement(key, TicketManager.createTicket(TicketManager.readTicketFields()));
+        CollectionManager.setElement(key, TicketReader.readTicket());
 
         System.out.printf("Element with id %d has been updated%n", id);
     }

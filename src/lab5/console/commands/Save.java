@@ -15,7 +15,7 @@ public class Save extends Command {
             CollectionManager.save();
             System.out.println("Collection has been saved in the file: " + CollectionManager.getFilePath());
         } catch (IOException e) {
-            System.out.println("Failed to write a file");
+            System.out.println("Failed to write a file. " + e.getMessage());
         }
     }
 }

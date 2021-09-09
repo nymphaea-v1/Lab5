@@ -1,5 +1,7 @@
 package lab5.console.commands;
 
+import lab5.InputReader;
+
 class Exit extends Command {
     protected Exit() {
         super("exit", "exit description");
@@ -7,6 +9,6 @@ class Exit extends Command {
 
     @Override
     protected void execute(String argument) {
-        CommandReader.stopReading();
+        InputReader.stopReading();
     }
 }

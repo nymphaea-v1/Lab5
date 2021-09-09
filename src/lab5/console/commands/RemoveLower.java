@@ -3,7 +3,7 @@ package lab5.console.commands;
 import lab5.CollectionManager;
 import lab5.exceptions.CancelCommandException;
 import lab5.ticket.Ticket;
-import lab5.ticket.TicketManager;
+import lab5.ticket.TicketReader;
 
 public class RemoveLower extends Command {
     protected RemoveLower() {
@@ -12,7 +12,7 @@ public class RemoveLower extends Command {
 
     @Override
     protected void execute(String argument) throws CancelCommandException {
-        Ticket ticket = TicketManager.createTicket(TicketManager.readTicketFields());
+        Ticket ticket = TicketReader.readTicket();
         int sizeBefore = CollectionManager.getSize();
 
         CollectionManager.getEntrySet().removeIf(n -> n.getValue().compareTo(ticket) < 0);

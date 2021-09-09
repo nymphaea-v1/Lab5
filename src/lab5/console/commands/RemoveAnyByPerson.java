@@ -4,7 +4,7 @@ import lab5.CollectionManager;
 import lab5.exceptions.CancelCommandException;
 import lab5.ticket.Person;
 import lab5.ticket.Ticket;
-import lab5.ticket.TicketManager;
+import lab5.ticket.TicketReader;
 
 import java.util.Map;
 
@@ -15,7 +15,7 @@ public class RemoveAnyByPerson extends Command {
 
     @Override
     protected void execute(String argument) throws CancelCommandException {
-        Person person = TicketManager.createPerson(TicketManager.readPersonFields());
+        Person person = TicketReader.readPerson();
 
         for (Map.Entry<Integer, Ticket> entry : CollectionManager.getEntrySet()) {
             if (entry.getValue().getPerson().equals(person)) {
