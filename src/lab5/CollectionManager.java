@@ -49,16 +49,14 @@ public class CollectionManager {
     }
 
     public static void add(File file) throws FileNotFoundException {
-        Scanner scanner = new Scanner(file);
+        Scanner lineScanner = new Scanner(file);
         int key = 0;
 
-        while (scanner.hasNext()) {
-            String fieldsString = scanner.nextLine();
-            String[] fields = fieldsString.split(", ");
-
+        while (lineScanner.hasNext()) {
+            Scanner fieldScanner = new Scanner(lineScanner.nextLine()).useDelimiter(", ");
             try {
-                collection.put(key++, new Ticket(fields));
-            } catch (IncorrectFieldException | ArrayIndexOutOfBoundsException e) {
+                collection.put(key++, TicketReader.readTicket(fieldScanner));
+            } catch (IncorrectFieldException e) {
                 System.out.println("Object initialization failed: " + e.getMessage());
             }
         }
@@ -67,7 +65,6 @@ public class CollectionManager {
     public static void initialize(File file) {
         try {
             filePath = file.toPath();
-
             add(file);
         } catch (IOException e) {
             System.out.println("Specified file's access error");
@@ -92,16 +89,8 @@ public class CollectionManager {
         outputStreamWriter.close();
     }
 
-    public static String convertToString() {
-        StringBuilder stringBuilder = new StringBuilder(getSize() * 200);
-        for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
-            stringBuilder.append(entry.getKey());
-            stringBuilder.append(": ");
-            stringBuilder.append(entry.getValue());
-            stringBuilder.append("\n");
-        }
-
-        return stringBuilder.toString();
+    public static void print() {
+        collection.forEach((key, value) -> System.out.println(key + ": " + value));
     }
 
     private static String convertToCSV() {

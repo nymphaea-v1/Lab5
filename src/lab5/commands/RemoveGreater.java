@@ -1,4 +1,4 @@
-package lab5.console.commands;
+package lab5.commands;
 
 import lab5.CollectionManager;
 import lab5.exceptions.CancelCommandException;
@@ -6,12 +6,12 @@ import lab5.ticket.Ticket;
 import lab5.ticket.TicketReader;
 
 public class RemoveGreater extends Command {
-    protected RemoveGreater() {
+    public RemoveGreater() {
         super("remove_greater", "remove_greater description");
     }
 
     @Override
-    protected void execute(String argument) throws CancelCommandException {
+    public void execute(String argument) throws CancelCommandException {
         Ticket ticket = TicketReader.readTicket();
         int sizeBefore = CollectionManager.getSize();
 

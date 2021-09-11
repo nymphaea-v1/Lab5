@@ -21,31 +21,11 @@ public class Person {
         return passportID;
     }
 
-    public Person(String[] fields) throws IncorrectFieldException {
-        if (fields.length != 4) throw new IncorrectFieldException("person fields size");
-
-        try {
-            birthday = LocalDate.parse(fields[0]);
-            height = Double.parseDouble(fields[1]);
-            weight = Integer.parseInt(fields[2]);
-            if ((passportID = fields[3]).length() < 10) throw new IncorrectFieldException("person " + passportID);
-        } catch (DateTimeParseException | NumberFormatException e) {
-            throw new IncorrectFieldException("Person parse: " + e.getMessage());
-        }
-    }
-
     public Person(List<Object> fields) {
         birthday = (LocalDate) fields.get(0);
         height = (double) fields.get(1);
         weight = (int) fields.get(2);
         passportID = (String) fields.get(3);
-    }
-
-    public Person(LocalDate birthday, double height, int weight, String passportID) {
-        this.birthday = birthday;
-        this.height = height;
-        this.weight = weight;
-        this.passportID = passportID;
     }
 
     public static LocalDate readBirthday(Scanner scanner) throws IncorrectFieldException {

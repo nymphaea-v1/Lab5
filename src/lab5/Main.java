@@ -1,8 +1,6 @@
 package lab5;
 
-import lab5.console.commands.CommandManager;
-
-import java.io.*;
+import java.io.File;
 
 public class Main {
     public static void main(String[] args) {

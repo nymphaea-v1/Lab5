@@ -9,24 +9,9 @@ class Coordinates {
     private final Long x;
     private final Integer y;
 
-    public Coordinates(String[] fields) throws IncorrectFieldException {
-        try {
-            x = Long.parseLong(fields[0]);
-            y = Integer.parseInt(fields[1]);
-        } catch (NumberFormatException e) {
-            throw new IncorrectFieldException("Coordinates parse: " + e.getMessage());
-        }
-
-    }
-
     public Coordinates(List<Object> fields) {
         x = (Long) fields.get(0);
         y = (Integer) fields.get(1);
-    }
-
-    public Coordinates(Long x, Integer y) {
-        this.y = y;
-        this.x = x;
     }
 
     protected Long getX() {

@@ -1,6 +1,5 @@
 package lab5;
 
-import lab5.console.commands.CommandManager;
 import lab5.exceptions.*;
 
 import java.io.File;
@@ -13,58 +12,51 @@ public class InputReader {
     public static boolean fromConsole = true;
 
     public static void startReading() {
-        Scanner sc = new Scanner(System.in);
-        sc.useDelimiter("\n");
+        Scanner consoleScanner = new Scanner(System.in);
+        consoleScanner.useDelimiter("\n");
 
-        scanners.add(sc);
+        scanners.add(consoleScanner);
 
         while (!scanners.isEmpty()) {
             Scanner scanner = scanners.getLast();
 
-            if (fromConsole || scanner.hasNext()) {
-                String next = scanner.nextLine().trim();
+            if (!(fromConsole || scanner.hasNext())) {
+                removeLastScanner();
+                continue;
+            }
 
-                if (next.isEmpty()) continue;
+            String next = scanner.nextLine().trim();
+            if (next.isEmpty()) continue;
 
-                String command;
-                String argument = null;
+            String command;
+            String argument = null;
 
-                int spaceIndex = next.indexOf(" ");
-                if (spaceIndex != -1) {
-                    command = next.substring(0, spaceIndex).toLowerCase();
-                    argument = next.substring(spaceIndex+1);
-                } else command = next.toLowerCase();
+            int spaceIndex = next.indexOf(" ");
+            if (spaceIndex != -1) {
+                command = next.substring(0, spaceIndex).toLowerCase();
+                argument = next.substring(++spaceIndex);
+            } else command = next.toLowerCase();
 
-                if (fromConsole) {
-                    while (true) {
-                        try {
-                            CommandManager.execute(command, argument);
-                            break;
-                        } catch (IncorrectArgumentException e) {
-                            System.out.println(e.getMessage() + " Try again or write type -1 to cancel");
+            do {
+                try {
+                    CommandManager.execute(command, argument);
+                } catch (IncorrectArgumentException | NoSuchCommandException | CancelCommandException e) {
+                    System.out.println(command + ": " + e.getMessage());
 
-                            argument = scanner.nextLine();
-                            if (argument.equals("-1")) {
-                                System.out.println("Current command execution has been cancelled");
-                                break;
-                            }
-                        } catch (NoSuchCommandException e) {
-                            System.out.println(e.getMessage() + " Type help to get a list of all available commands");
-                            break;
-                        } catch ( CancelCommandException e) {
-                            System.out.println(e.getMessage());
-                            break;
-                        }
-                    }
-                } else {
-                    try {
-                        CommandManager.execute(command, argument);
-                    } catch (NoSuchCommandException | IncorrectArgumentException | CancelCommandException e) {
-                        System.out.println(e.getMessage());
-                        toConsole();
+                    if (!fromConsole) toConsole();
+                    else if (e instanceof NoSuchCommandException) System.out.println("Type help to get a list of all available commands");
+                    else if (e instanceof IncorrectArgumentException) {
+                        System.out.println("Try again or type -1 to cancel: ");
+
+                        argument = scanner.nextLine();
+                        if (!argument.equals("-1")) continue;
+
+                        System.out.println("Current command execution has been cancelled");
                     }
                 }
-            } else removeLastScanner();
+
+                break;
+            } while (true);
         }
     }
 
@@ -75,21 +67,21 @@ public class InputReader {
         fromConsole = true;
     }
 
-    public static void addFileToScan(File file, String delimiter) throws FileNotFoundException {
-        String filePath = file.getAbsolutePath();
+    public static void addFileToScan(String path) throws FileNotFoundException {
+        File file = new File(path);
+        String absolutePath = file.getAbsolutePath();
 
-        if (filePaths.contains(filePath)) {
+        if (filePaths.contains(absolutePath)) {
             System.out.println("Recursion");
 
             toConsole();
             return;
         }
 
-        Scanner scanner = new Scanner(file);
-        scanner.useDelimiter(delimiter);
-        scanners.addLast(scanner);
+        Scanner scanner = new Scanner(file).useDelimiter("\r\n");
 
-        filePaths.addLast(filePath);
+        scanners.addLast(scanner);
+        filePaths.addLast(absolutePath);
 
         fromConsole = false;
     }
@@ -112,35 +104,40 @@ public class InputReader {
         fromConsole = true;
     }
 
-    public static List<Object> readObject(List<PairReader> readers) {
+    public static List<Object> readObject(List<NamedReader> readers) {
         return fromConsole ? readObjectConsole(readers) : readObjectFile(readers);
     }
 
-    private static List<Object> readObjectFile(List<PairReader> readers) {
+    public static List<Object> readObject(List<NamedReader> readers, Scanner scanner) throws IncorrectFieldException {
         List<Object> result = new ArrayList<>();
-        Scanner scanner = scanners.getLast();
-
-        for (PairReader reader : readers) {
-            try {
-                result.add(reader.reader.read(scanner));
-            } catch (IncorrectFieldException e) {
-                throw new CancelCommandException(e.getMessage());
-            }
+        for (NamedReader reader : readers) {
+            if (!scanner.hasNext()) throw new IncorrectFieldException("end of file");
+            result.add(reader.reader.read(scanner));
         }
-
         return result;
     }
 
-    private static List<Object> readObjectConsole(List<PairReader> readers) {
+    private static List<Object> readObjectFile(List<NamedReader> readers) {
+        try {
+            return readObject(readers, scanners.getLast());
+        } catch (IncorrectFieldException e) {
+            throw new CancelCommandException(e.getMessage());
+        }
+    }
+
+    private static List<Object> readObjectConsole(List<NamedReader> readers) {
         List<Object> result = new ArrayList<>();
         Scanner scanner = scanners.getFirst();
 
-        for (PairReader reader : readers) {
+        for (NamedReader reader : readers) {
             Object element;
             while (true) {
                 try {
                     System.out.println("Enter " + reader.name + ":");
+
                     element = reader.reader.read(scanner);
+                    if (element.equals("-1")) throw new CancelCommandException();
+
                     break;
                 } catch (IncorrectFieldException e) {
                     String message = e.getMessage();
@@ -155,17 +152,17 @@ public class InputReader {
         return result;
     }
 
-    public static class PairReader {
+    public static class NamedReader {
         public final String name;
         public final Reader reader;
 
-        public PairReader(String name, Reader reader) {
+        public NamedReader(String name, Reader reader) {
             this.name = name;
             this.reader = reader;
         }
-    }
 
-    public interface Reader {
-        Object read(Scanner scanner) throws IncorrectFieldException;
+        public interface Reader {
+            Object read(Scanner scanner) throws IncorrectFieldException;
+        }
     }
 }

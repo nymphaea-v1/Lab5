@@ -1,4 +1,4 @@
-package lab5.console.commands;
+package lab5.commands;
 
 import lab5.CollectionManager;
 

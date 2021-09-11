@@ -1,4 +1,4 @@
-package lab5.console.commands;
+package lab5.commands;
 
 import lab5.CollectionManager;
 import lab5.exceptions.CancelCommandException;
@@ -6,12 +6,12 @@ import lab5.exceptions.IncorrectArgumentException;
 import lab5.ticket.TicketReader;
 
 public class Insert extends Command {
-    protected Insert() {
+    public Insert() {
         super("insert", "insert description", "insert key");
     }
 
     @Override
-    protected void execute(String argument) throws IncorrectArgumentException, CancelCommandException {
+    public void execute(String argument) throws IncorrectArgumentException, CancelCommandException {
         if (argument == null) throw new IncorrectArgumentException("no argument");
 
         Integer key;
@@ -26,7 +26,6 @@ public class Insert extends Command {
         }
 
         CollectionManager.setElement(key, TicketReader.readTicket());
-
         System.out.println("Ticket has been added to the collection");
     }
 }

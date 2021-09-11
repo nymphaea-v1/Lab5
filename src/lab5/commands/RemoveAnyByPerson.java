@@ -1,4 +1,4 @@
-package lab5.console.commands;
+package lab5.commands;
 
 import lab5.CollectionManager;
 import lab5.exceptions.CancelCommandException;
@@ -9,21 +9,21 @@ import lab5.ticket.TicketReader;
 import java.util.Map;
 
 public class RemoveAnyByPerson extends Command {
-    protected RemoveAnyByPerson() {
+    public RemoveAnyByPerson() {
         super("remove_any_by_person", "remove_any_by_person description");
     }
 
     @Override
-    protected void execute(String argument) throws CancelCommandException {
+    public void execute(String argument) throws CancelCommandException {
         Person person = TicketReader.readPerson();
 
         for (Map.Entry<Integer, Ticket> entry : CollectionManager.getEntrySet()) {
-            if (entry.getValue().getPerson().equals(person)) {
-                CollectionManager.removeElement(entry.getKey());
-                System.out.println("One element with that person has been removed");
+            if (!(entry.getValue().getPerson().equals(person))) continue;
 
-                return;
-            }
+            CollectionManager.removeElement(entry.getKey());
+            System.out.println("One element with that person has been removed");
+
+            return;
         }
 
         System.out.println("There are no elements with specified person");

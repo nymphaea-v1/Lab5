@@ -1,14 +1,14 @@
-package lab5.console.commands;
+package lab5.commands;
 
 import lab5.InputReader;
 
-class Exit extends Command {
-    protected Exit() {
+public class Exit extends Command {
+    public Exit() {
         super("exit", "exit description");
     }
 
     @Override
-    protected void execute(String argument) {
+    public void execute(String argument) {
         InputReader.stopReading();
     }
 }
