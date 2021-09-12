@@ -44,53 +44,55 @@ public class Ticket implements Comparable<Ticket>{
     }
 
     public static long readId(Scanner scanner) throws IncorrectFieldException {
-        String idString = scanner.next();
+        String idString = scanner.next().trim();
 
         try {
             return Long.parseLong(idString);
         } catch (NumberFormatException e) {
-            throw new IncorrectFieldException("id");
+            throw new IncorrectFieldException(idString);
         }
     }
 
     public static Date readCreationDate(Scanner scanner) throws IncorrectFieldException {
-        String creationDateString = scanner.next();
+        String creationDateString = scanner.next().trim();
 
         try {
             return new Date(Long.parseLong(creationDateString));
         } catch (NumberFormatException e) {
-            throw new IncorrectFieldException("creation date");
+            throw new IncorrectFieldException(creationDateString);
         }
     }
 
     public static String readName(Scanner scanner) throws IncorrectFieldException {
-        String name = scanner.next();
+        String name = scanner.next().trim();
 
-        if (name.trim().isEmpty()) throw new IncorrectFieldException(name);
+        if (name.isEmpty()) throw new IncorrectFieldException(name);
 
         return name;
     }
 
     public static Integer readPrice(Scanner scanner) throws IncorrectFieldException {
-        String priceString = scanner.next();
+        String priceString = scanner.next().trim();
         int price;
 
         try {
             price = Integer.parseInt(priceString);
         } catch (NumberFormatException e) {
-            throw new IncorrectFieldException("price: ");
+            throw new IncorrectFieldException(priceString);
         }
 
-        if (price > 0) return price;
+        if (price <= 0) throw new IncorrectFieldException(priceString);
 
-        throw new IncorrectFieldException(priceString);
+        return price;
     }
 
     public static TicketType readTicketType(Scanner scanner) throws IncorrectFieldException {
+        String ticketTypeString = scanner.next().trim();
+
         try {
-            return TicketType.valueOf(scanner.next().toUpperCase());
+            return TicketType.valueOf(ticketTypeString.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IncorrectFieldException("ticket type");
+            throw new IncorrectFieldException(ticketTypeString);
         }
     }
 

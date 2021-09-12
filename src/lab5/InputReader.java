@@ -78,7 +78,7 @@ public class InputReader {
             return;
         }
 
-        Scanner scanner = new Scanner(file).useDelimiter("\r\n");
+        Scanner scanner = new Scanner(file).useDelimiter("\\r?\\n|\\r");
 
         scanners.addLast(scanner);
         filePaths.addLast(absolutePath);
@@ -136,11 +136,11 @@ public class InputReader {
                     System.out.println("Enter " + reader.name + ":");
 
                     element = reader.reader.read(scanner);
-                    if (element.equals("-1")) throw new CancelCommandException();
+                    if (element.toString().trim().equals("-1")) throw new CancelCommandException();
 
                     break;
                 } catch (IncorrectFieldException e) {
-                    String message = e.getMessage();
+                    String message = e.getMessage().trim();
                     if (message.equals("-1")) throw new CancelCommandException();
                     System.out.println("Invalid input (" + message + "). Try again:");
                 }

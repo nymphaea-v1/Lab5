@@ -29,7 +29,7 @@ public class Person {
     }
 
     public static LocalDate readBirthday(Scanner scanner) throws IncorrectFieldException {
-        String birthdayString = scanner.next();
+        String birthdayString = scanner.next().trim();
 
         try {
             return LocalDate.parse(birthdayString);
@@ -39,42 +39,41 @@ public class Person {
     }
 
     public static double readHeight(Scanner scanner) throws IncorrectFieldException {
-        String heightString = scanner.next();
+        String heightString = scanner.next().trim();
         double height;
 
         try {
             height = Double.parseDouble(heightString);
         } catch (NumberFormatException e) {
-            throw new IncorrectFieldException("height");
+            throw new IncorrectFieldException(heightString);
         }
 
-        if (height > 0) return height;
+        if (height <= 0) throw new IncorrectFieldException(heightString);
 
-        throw new IncorrectFieldException(heightString);
+        return height;
     }
 
     public static int readWeight(Scanner scanner) throws IncorrectFieldException {
-        String weightString = scanner.next();
+        String weightString = scanner.next().trim();
         int weight;
 
         try {
             weight = Integer.parseInt(weightString);
         } catch (NumberFormatException e) {
-            throw new IncorrectFieldException("weight");
+            throw new IncorrectFieldException(weightString);
         }
 
-        if (weight > 0) return weight;
+        if (weight <= 0) throw new IncorrectFieldException(weightString);
 
-        throw new IncorrectFieldException(weightString);
+        return weight;
     }
 
     public static String readPassportID(Scanner scanner) throws IncorrectFieldException {
-        String passportID = scanner.next();
+        String passportID = scanner.next().trim();
 
-        if (passportID.matches(" *")) return null;
-        if (passportID.length() >= 10) return passportID;
+        if (passportID.length() < 10) throw new IncorrectFieldException(passportID);
 
-        throw new IncorrectFieldException(passportID);
+        return passportID;
     }
 
     public String toCSV() {

@@ -23,29 +23,33 @@ class Coordinates {
     }
 
     public static Long readX(Scanner scanner) throws IncorrectFieldException {
+        String xString = scanner.next().trim();
+        long x;
+
         try {
-            String xStr = scanner.next();
-            Long x = Long.parseLong(xStr);
-
-            if (x > 0) return x;
-
-            throw new IncorrectFieldException(x);
+            x = Long.parseLong(xString);
         } catch (NumberFormatException e) {
-            throw new IncorrectFieldException("x coordinate");
+            throw new IncorrectFieldException(xString);
         }
+
+        if (x <= 0) throw new IncorrectFieldException(x);
+
+        return x;
     }
 
     public static Integer readY(Scanner scanner) throws IncorrectFieldException {
+        String yString = scanner.next().trim();
+        int y;
+
         try {
-            String yStr = scanner.next();
-            Integer y = Integer.parseInt(yStr);
-
-            if (y > 0) return y;
-
-            throw new IncorrectFieldException(y);
+            y = Integer.parseInt(yString);
         } catch (NumberFormatException e) {
-            throw new IncorrectFieldException("y coordinate");
+            throw new IncorrectFieldException(yString);
         }
+
+        if (y <= 0) throw new IncorrectFieldException(y);
+
+        return y;
     }
 
     @Override
