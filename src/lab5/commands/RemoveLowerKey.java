@@ -5,7 +5,7 @@ import lab5.exceptions.IncorrectArgumentException;
 
 public class RemoveLowerKey extends Command {
     public RemoveLowerKey() {
-        super("remove_lower_key", "remove_lower_key description", "remove_lower_key key");
+        super("remove_lower_key", "remove all elements with a key lower than specified", "remove_lower_key key");
     }
 
     @Override

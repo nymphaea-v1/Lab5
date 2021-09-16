@@ -32,7 +32,7 @@ class Coordinates {
             throw new IncorrectFieldException(xString);
         }
 
-        if (x <= 0) throw new IncorrectFieldException(x);
+        if (x > 565) throw new IncorrectFieldException(x);
 
         return x;
     }
@@ -47,7 +47,7 @@ class Coordinates {
             throw new IncorrectFieldException(yString);
         }
 
-        if (y <= 0) throw new IncorrectFieldException(y);
+        if (y > 907) throw new IncorrectFieldException(y);
 
         return y;
     }

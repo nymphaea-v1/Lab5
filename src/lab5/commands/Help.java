@@ -4,7 +4,7 @@ import lab5.CommandManager;
 
 public class Help extends Command {
     public Help() {
-        super("help", "help command description");
+        super("help", "display list of all available commands");
     }
 
     @Override

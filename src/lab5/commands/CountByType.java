@@ -7,7 +7,7 @@ import lab5.ticket.TicketType;
 
 public class CountByType extends Command {
     public CountByType() {
-        super("count_by_type", "count_by_type description", "count_by_type type");
+        super("count_by_type", "display the number of elements with specified ticket type", "count_by_type type");
     }
 
     @Override

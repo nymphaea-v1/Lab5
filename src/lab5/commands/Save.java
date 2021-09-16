@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Save extends Command {
     public Save() {
-        super("save", "save description");
+        super("save", "save collection in the same file");
     }
 
     @Override

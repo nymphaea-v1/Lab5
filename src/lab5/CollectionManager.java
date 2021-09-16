@@ -20,9 +20,9 @@ public class CollectionManager {
         return collection.size();
     }
 
-    public static Integer getKeyById(long id) {
+    public static Ticket getElementById(long id) {
         for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
-            if (entry.getValue().getId() == id) return entry.getKey();
+            if (entry.getValue().getId() == id) return entry.getValue();
         }
 
         return null;
@@ -48,7 +48,7 @@ public class CollectionManager {
         return collection.remove(key) != null;
     }
 
-    public static void add(File file) throws FileNotFoundException {
+    public static void addFromFile(File file) throws FileNotFoundException {
         Scanner lineScanner = new Scanner(file);
         int key = 0;
 
@@ -65,7 +65,7 @@ public class CollectionManager {
     public static void initialize(File file) {
         try {
             filePath = file.toPath();
-            add(file);
+            addFromFile(file);
         } catch (IOException e) {
             System.out.println("Specified file's access error");
             return;
@@ -90,7 +90,9 @@ public class CollectionManager {
     }
 
     public static void print() {
-        collection.forEach((key, value) -> System.out.println(key + ": " + value));
+        for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
     }
 
     private static String convertToCSV() {
@@ -110,7 +112,7 @@ public class CollectionManager {
         collection.clear();
 
         collectionClone.entrySet().stream()
-                .sorted(Comparator.comparing(n -> n.getValue().getCreationDate()))
-                .forEach(entry -> collection.put(entry.getKey(), entry.getValue()));
+            .sorted(Comparator.comparing(n -> n.getValue().getCreationDate()))
+            .forEach(entry -> collection.put(entry.getKey(), entry.getValue()));
     }
 }

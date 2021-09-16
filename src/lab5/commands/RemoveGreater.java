@@ -7,7 +7,7 @@ import lab5.ticket.TicketReader;
 
 public class RemoveGreater extends Command {
     public RemoveGreater() {
-        super("remove_greater", "remove_greater description");
+        super("remove_greater", "remove all greater elements");
     }
 
     @Override

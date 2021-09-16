@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public class FilterStartsWithName extends Command {
     public FilterStartsWithName() {
-        super("filter_starts_with_name", "filter_starts_with_name description", "filter_starts_with_name name");
+        super("filter_starts_with_name", "display all elements with a name starting with specified substring", "filter_starts_with_name name");
     }
 
     @Override

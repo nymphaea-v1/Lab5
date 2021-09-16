@@ -4,7 +4,7 @@ import lab5.InputReader;
 
 public class Exit extends Command {
     public Exit() {
-        super("exit", "exit description");
+        super("exit", "exit the program (without saving)");
     }
 
     @Override

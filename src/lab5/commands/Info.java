@@ -11,7 +11,7 @@ import java.util.Date;
 public class Info extends Command {
     private final static String infoPattern = "Info about this collection:\nType: LinkedHashMap\nCreation date: %s\nLast modified date: %s\nNumber of elements: %d\n";
     public Info() {
-        super("info", "info command description");
+        super("info", "display information about this collection");
     }
 
     @Override

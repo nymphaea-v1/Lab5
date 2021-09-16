@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 public class ExecuteScript extends Command {
 
     public ExecuteScript() {
-        super("execute_script", "execute_script description", "execute_script file_path");
+        super("execute_script", "execute script from specified file", "execute_script file_path");
     }
 
     @Override

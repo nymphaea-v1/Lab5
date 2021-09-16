@@ -4,7 +4,7 @@ import lab5.CollectionManager;
 
 public class Clear extends Command {
     public Clear() {
-        super("clear", "clear description", "clear");
+        super("clear", "clear this collection", "clear");
     }
 
     @Override

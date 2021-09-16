@@ -4,7 +4,7 @@ import lab5.CollectionManager;
 
 public class Show extends Command {
     public Show() {
-        super("show", "show description");
+        super("show", "display this collection");
     }
 
     @Override

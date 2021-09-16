@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class RemoveAnyByPerson extends Command {
     public RemoveAnyByPerson() {
-        super("remove_any_by_person", "remove_any_by_person description");
+        super("remove_any_by_person", "remove one element with specified person");
     }
 
     @Override

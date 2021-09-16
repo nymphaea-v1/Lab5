@@ -6,12 +6,12 @@ import java.util.*;
 
 public class Ticket implements Comparable<Ticket>{
     private final long id;
-    private final String name;
-    private final Coordinates coordinates;
+    private String name;
+    private Coordinates coordinates;
     private final Date creationDate;
-    private final int price;
-    private final TicketType type;
-    private final Person person;
+    private int price;
+    private TicketType type;
+    private Person person;
 
     public Ticket(List<Object> fields) {
         name = (String) fields.get(0);
@@ -41,6 +41,14 @@ public class Ticket implements Comparable<Ticket>{
 
     public Person getPerson() {
         return person;
+    }
+
+    public void setFields(List<Object> fields) {
+        name = (String) fields.get(0);
+        price = (int) fields.get(1);
+        type = (TicketType) fields.get(2);
+        coordinates = (Coordinates) fields.get(3);
+        person = (Person) fields.get(4);
     }
 
     public static long readId(Scanner scanner) throws IncorrectFieldException {

@@ -7,7 +7,7 @@ import lab5.ticket.TicketReader;
 
 public class RemoveLower extends Command {
     public RemoveLower() {
-        super("remove_lower", "remove_lower description");
+        super("remove_lower", "remove all lower elements");
     }
 
     @Override

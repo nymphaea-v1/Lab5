@@ -34,7 +34,7 @@ public class InputReader {
             int spaceIndex = next.indexOf(" ");
             if (spaceIndex != -1) {
                 command = next.substring(0, spaceIndex).toLowerCase();
-                argument = next.substring(++spaceIndex);
+                argument = next.substring(spaceIndex + 1);
             } else command = next.toLowerCase();
 
             do {
@@ -46,10 +46,10 @@ public class InputReader {
                     if (!fromConsole) toConsole();
                     else if (e instanceof NoSuchCommandException) System.out.println("Type help to get a list of all available commands");
                     else if (e instanceof IncorrectArgumentException) {
-                        System.out.println("Try again or type -1 to cancel: ");
+                        System.out.println("Try again or type 2? to cancel: ");
 
                         argument = scanner.nextLine();
-                        if (!argument.equals("-1")) continue;
+                        if (!argument.equals("2?")) continue;
 
                         System.out.println("Current command execution has been cancelled");
                     }
@@ -136,12 +136,12 @@ public class InputReader {
                     System.out.println("Enter " + reader.name + ":");
 
                     element = reader.reader.read(scanner);
-                    if (element.toString().trim().equals("-1")) throw new CancelCommandException();
+                    if (element.toString().trim().equals("2?")) throw new CancelCommandException();
 
                     break;
                 } catch (IncorrectFieldException e) {
                     String message = e.getMessage().trim();
-                    if (message.equals("-1")) throw new CancelCommandException();
+                    if (message.equals("2?")) throw new CancelCommandException();
                     System.out.println("Invalid input (" + message + "). Try again:");
                 }
             }

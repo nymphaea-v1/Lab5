@@ -3,12 +3,12 @@ package lab5.commands;
 import lab5.CollectionManager;
 import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.IncorrectArgumentException;
-
+import lab5.ticket.Ticket;
 import lab5.ticket.TicketReader;
 
 public class Update extends Command {
     public Update() {
-        super("update", "update description", "update id");
+        super("update", "update element with specified id", "update id");
     }
 
     @Override
@@ -22,13 +22,13 @@ public class Update extends Command {
             throw new IncorrectArgumentException(argument + " is not a valid id");
         }
 
-        Integer key = CollectionManager.getKeyById(id);
+        Ticket ticket = CollectionManager.getElementById(id);
 
-        if (key == null) {
+        if (ticket == null) {
             throw new IncorrectArgumentException("no elements with specified id found (" + argument + ")");
         }
 
-        CollectionManager.setElement(key, TicketReader.readTicket());
+        ticket.setFields(TicketReader.readTicketFields());
         System.out.printf("Element with id %d has been updated%n", id);
     }
 }

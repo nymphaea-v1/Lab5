@@ -7,7 +7,7 @@ import lab5.ticket.TicketReader;
 
 public class Insert extends Command {
     public Insert() {
-        super("insert", "insert description", "insert key");
+        super("insert", "insert new element with specified key", "insert key");
     }
 
     @Override
