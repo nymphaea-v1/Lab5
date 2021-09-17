@@ -87,7 +87,7 @@ public class InputReader {
     }
 
     public static void removeLastScanner() {
-        scanners.removeLast();
+        scanners.removeLast().close();
         filePaths.removeLast();
 
         if (filePaths.isEmpty()) fromConsole = true;

@@ -17,7 +17,7 @@ public class RemoveAnyByPerson extends Command {
     public void execute(String argument) throws CancelCommandException {
         Person person = TicketReader.readPerson();
 
-        for (Map.Entry<Integer, Ticket> entry : CollectionManager.getEntrySet()) {
+        for (Map.Entry<Long, Ticket> entry : CollectionManager.getEntrySet()) {
             if (!(entry.getValue().getPerson().equals(person))) continue;
 
             CollectionManager.removeElement(entry.getKey());

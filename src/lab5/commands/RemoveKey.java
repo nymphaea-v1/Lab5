@@ -13,7 +13,7 @@ public class RemoveKey extends Command {
         if (argument == null) throw new IncorrectArgumentException("no argument");
 
         try {
-            Integer key = Integer.parseInt(argument);
+            Long key = Long.parseLong(argument);
 
             if (!CollectionManager.removeElement(key)) {
                 throw new IncorrectArgumentException("no elements with that key found");

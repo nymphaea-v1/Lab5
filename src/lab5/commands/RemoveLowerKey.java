@@ -13,7 +13,7 @@ public class RemoveLowerKey extends Command {
         if (argument == null) throw new IncorrectArgumentException("no argument");
 
         try {
-            Integer key = Integer.parseInt(argument);
+            Long key = Long.parseLong(argument);
             int sizeBefore = CollectionManager.getSize();
 
             CollectionManager.getEntrySet().removeIf(n -> n.getKey() < key);

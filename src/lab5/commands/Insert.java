@@ -14,9 +14,9 @@ public class Insert extends Command {
     public void execute(String argument) throws IncorrectArgumentException, CancelCommandException {
         if (argument == null) throw new IncorrectArgumentException("no argument");
 
-        Integer key;
+        Long key;
         try {
-            key = Integer.parseInt(argument);
+            key = Long.parseLong(argument);
         } catch (NumberFormatException e) {
             throw new IncorrectArgumentException(argument + " is not a valid key");
         }

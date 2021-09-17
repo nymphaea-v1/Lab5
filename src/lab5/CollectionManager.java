@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class CollectionManager {
-    private static final LinkedHashMap<Integer, Ticket> collection = new LinkedHashMap<>();
+    private static final LinkedHashMap<Long, Ticket> collection = new LinkedHashMap<>();
     private static Path filePath;
 
     public static Path getFilePath() {
@@ -21,14 +21,14 @@ public class CollectionManager {
     }
 
     public static Ticket getElementById(long id) {
-        for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
+        for (Map.Entry<Long, Ticket> entry : collection.entrySet()) {
             if (entry.getValue().getId() == id) return entry.getValue();
         }
 
         return null;
     }
 
-    public static Set<Map.Entry<Integer, Ticket>> getEntrySet() {
+    public static Set<Map.Entry<Long, Ticket>> getEntrySet() {
         return collection.entrySet();
     }
 
@@ -36,26 +36,25 @@ public class CollectionManager {
         return collection.values();
     }
 
-    public static boolean containsKey(Integer key) {
+    public static boolean containsKey(Long key) {
         return collection.containsKey(key);
     }
 
-    public static void setElement(Integer key, Ticket ticket) {
+    public static void setElement(Long key, Ticket ticket) {
         collection.put(key, ticket);
     }
 
-    public static boolean removeElement(Integer key) {
+    public static boolean removeElement(Long key) {
         return collection.remove(key) != null;
     }
 
     public static void addFromFile(File file) throws FileNotFoundException {
         Scanner lineScanner = new Scanner(file);
-        int key = 0;
-
         while (lineScanner.hasNext()) {
             Scanner fieldScanner = new Scanner(lineScanner.nextLine()).useDelimiter(", ");
             try {
-                collection.put(key++, TicketReader.readTicket(fieldScanner));
+                Ticket ticket = TicketReader.readTicket(fieldScanner);
+                collection.put(ticket.getId(), ticket);
             } catch (IncorrectFieldException e) {
                 System.out.println("Object initialization failed: " + e.getMessage());
             }
@@ -90,7 +89,7 @@ public class CollectionManager {
     }
 
     public static void print() {
-        for (Map.Entry<Integer, Ticket> entry : collection.entrySet()) {
+        for (Map.Entry<Long, Ticket> entry : collection.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
@@ -107,7 +106,7 @@ public class CollectionManager {
     }
 
     private static void sortByCreationDate() {
-        LinkedHashMap<Integer, Ticket> collectionClone = new LinkedHashMap<>(collection);
+        LinkedHashMap<Long, Ticket> collectionClone = new LinkedHashMap<>(collection);
 
         collection.clear();
 

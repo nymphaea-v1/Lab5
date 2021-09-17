@@ -5,12 +5,15 @@ import lab5.exceptions.IncorrectFieldException;
 import java.util.*;
 
 public class Ticket implements Comparable<Ticket>{
+    private static long ticketCount = 0;
+
     private final long id;
-    private String name;
-    private Coordinates coordinates;
     private final Date creationDate;
+
+    private String name;
     private int price;
     private TicketType type;
+    private Coordinates coordinates;
     private Person person;
 
     public Ticket(List<Object> fields) {
@@ -19,7 +22,7 @@ public class Ticket implements Comparable<Ticket>{
         type = (TicketType) fields.get(2);
         coordinates = (Coordinates) fields.get(3);
         person = (Person) fields.get(4);
-        id =  (fields.size() == 6 ? (long) fields.get(5) : Math.round(Math.random() * 1000000));
+        id =  (fields.size() == 6 ? (long) fields.get(5) : ticketCount++);
         creationDate = fields.size() == 7 ? (Date) fields.get(6) : new Date();
     }
 
@@ -121,7 +124,19 @@ public class Ticket implements Comparable<Ticket>{
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (object == this) return true;
+        if (!(object instanceof Ticket)) return false;
+
+        Ticket ticket = (Ticket) object;
+        return ticket.id == id;
+    }
+
+    @Override
     public int compareTo(Ticket ticket) {
-        return name.compareTo(ticket.getName());
+        if (ticket.equals(this)) return 0;
+
+        int result = ticket.creationDate.compareTo(creationDate);
+        return result != 0 ? result : Integer.compare(ticket.price, price);
     }
 }
