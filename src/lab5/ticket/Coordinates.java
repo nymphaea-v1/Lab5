@@ -2,16 +2,15 @@ package lab5.ticket;
 
 import lab5.exceptions.IncorrectFieldException;
 
-import java.util.List;
 import java.util.Scanner;
 
 class Coordinates {
     private final Long x;
     private final Integer y;
 
-    public Coordinates(List<Object> fields) {
-        x = (Long) fields.get(0);
-        y = (Integer) fields.get(1);
+    public Coordinates(Long x, Integer y) {
+        this.x = x;
+        this.y = y;
     }
 
     protected Long getX() {

@@ -67,7 +67,7 @@ public class InputReader {
         fromConsole = true;
     }
 
-    public static void addFileToScan(String path) throws FileNotFoundException {
+    public static void addToScan(String path) throws FileNotFoundException {
         File file = new File(path);
         String absolutePath = file.getAbsolutePath();
 
@@ -78,7 +78,7 @@ public class InputReader {
             return;
         }
 
-        Scanner scanner = new Scanner(file).useDelimiter("\\r?\\n|\\r");
+        Scanner scanner = new Scanner(file).useDelimiter("\\r?\\n|\\r|, ");
 
         scanners.addLast(scanner);
         filePaths.addLast(absolutePath);
@@ -104,28 +104,32 @@ public class InputReader {
         fromConsole = true;
     }
 
-    public static List<Object> readObject(List<NamedReader> readers) {
+    public static List<Object> readObject(List<NamedReader> readers) throws CannotReadObjectException {
         return fromConsole ? readObjectConsole(readers) : readObjectFile(readers);
     }
 
-    public static List<Object> readObject(List<NamedReader> readers, Scanner scanner) throws IncorrectFieldException {
+    private static List<Object> readObjectFile(List<NamedReader> readers) throws CannotReadObjectException {
         List<Object> result = new ArrayList<>();
+        Scanner scanner = scanners.getLast();
+
         for (NamedReader reader : readers) {
-            if (!scanner.hasNext()) throw new IncorrectFieldException("end of file");
-            result.add(reader.reader.read(scanner));
+            if (!scanner.hasNext()) {
+                removeLastScanner();
+                throw new CannotReadObjectException("end of file");
+            }
+
+            try {
+                result.add(reader.reader.read(scanner));
+            } catch (IncorrectFieldException e) {
+
+                throw new CannotReadObjectException(e.getMessage());
+            }
         }
+
         return result;
     }
 
-    private static List<Object> readObjectFile(List<NamedReader> readers) {
-        try {
-            return readObject(readers, scanners.getLast());
-        } catch (IncorrectFieldException e) {
-            throw new CancelCommandException(e.getMessage());
-        }
-    }
-
-    private static List<Object> readObjectConsole(List<NamedReader> readers) {
+    private static List<Object> readObjectConsole(List<NamedReader> readers) throws CannotReadObjectException {
         List<Object> result = new ArrayList<>();
         Scanner scanner = scanners.getFirst();
 
@@ -136,12 +140,12 @@ public class InputReader {
                     System.out.println("Enter " + reader.name + ":");
 
                     element = reader.reader.read(scanner);
-                    if (element.toString().trim().equals("2?")) throw new CancelCommandException();
+                    if (element.toString().trim().equals("2?")) throw new CannotReadObjectException();
 
                     break;
                 } catch (IncorrectFieldException e) {
                     String message = e.getMessage().trim();
-                    if (message.equals("2?")) throw new CancelCommandException();
+                    if (message.equals("2?")) throw new CannotReadObjectException();
                     System.out.println("Invalid input (" + message + "). Try again:");
                 }
             }
@@ -150,6 +154,16 @@ public class InputReader {
         }
 
         return result;
+    }
+
+    public static class CannotReadObjectException extends Exception {
+        CannotReadObjectException(String message) {
+            super(message);
+        }
+
+        CannotReadObjectException() {
+            super();
+        }
     }
 
     public static class NamedReader {

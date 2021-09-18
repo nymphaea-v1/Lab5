@@ -16,7 +16,7 @@ public class ExecuteScript extends Command {
         if (filePath == null) throw new IncorrectArgumentException("no argument");
 
         try {
-            InputReader.addFileToScan(filePath);
+            InputReader.addToScan(filePath);
         } catch (FileNotFoundException e) {
             throw new IncorrectArgumentException("file not found (" + filePath + ")");
         }

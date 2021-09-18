@@ -5,7 +5,7 @@ import lab5.exceptions.IncorrectFieldException;
 import java.util.*;
 
 public class Ticket implements Comparable<Ticket>{
-    private static long ticketCount = 0;
+    private static long largestId = 0;
 
     private final long id;
     private final Date creationDate;
@@ -16,26 +16,30 @@ public class Ticket implements Comparable<Ticket>{
     private Coordinates coordinates;
     private Person person;
 
-    public Ticket(List<Object> fields) {
-        name = (String) fields.get(0);
-        price = (int) fields.get(1);
-        type = (TicketType) fields.get(2);
-        coordinates = (Coordinates) fields.get(3);
-        person = (Person) fields.get(4);
-        id =  (fields.size() == 6 ? (long) fields.get(5) : ticketCount++);
-        creationDate = fields.size() == 7 ? (Date) fields.get(6) : new Date();
+    public Ticket(String name, int price, TicketType type, Coordinates coordinates, Person person, long id, Date creationDate) {
+        this.name = name;
+        this.price = price;
+        this.type = type;
+        this.coordinates = coordinates;
+        this.person = person;
+        this.id = id;
+        this.creationDate = creationDate;
+
+        if (id > largestId) largestId = id;
     }
 
-    public long getId() {
-        return id;
+    public Ticket(String name, int price, TicketType type, Coordinates coordinates, Person person) {
+        this.name = name;
+        this.price = price;
+        this.type = type;
+        this.coordinates = coordinates;
+        this.person = person;
+        this.id = ++largestId;
+        this.creationDate = new Date();
     }
 
     public String getName() {
         return name;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
     }
 
     public TicketType getType() {
@@ -46,12 +50,32 @@ public class Ticket implements Comparable<Ticket>{
         return person;
     }
 
-    public void setFields(List<Object> fields) {
-        name = (String) fields.get(0);
-        price = (int) fields.get(1);
-        type = (TicketType) fields.get(2);
-        coordinates = (Coordinates) fields.get(3);
-        person = (Person) fields.get(4);
+    public long getId() {
+        return id;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setType(TicketType type) {
+        this.type = type;
+    }
+
+    public void setCoordinates(Coordinates coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public static long readId(Scanner scanner) throws IncorrectFieldException {

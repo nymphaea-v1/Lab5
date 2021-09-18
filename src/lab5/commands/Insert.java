@@ -1,6 +1,7 @@
 package lab5.commands;
 
 import lab5.CollectionManager;
+import lab5.InputReader;
 import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.IncorrectArgumentException;
 import lab5.ticket.TicketReader;
@@ -25,7 +26,11 @@ public class Insert extends Command {
             throw new IncorrectArgumentException(argument + " is not a valid key");
         }
 
-        CollectionManager.setElement(key, TicketReader.readTicket());
+        try {
+            CollectionManager.setElement(key, TicketReader.read(true));
+        } catch (InputReader.CannotReadObjectException e) {
+            throw new CancelCommandException(e.getMessage());
+        }
         System.out.println("Ticket has been added to the collection");
     }
 }

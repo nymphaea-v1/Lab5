@@ -2,8 +2,8 @@ package lab5.ticket;
 
 import lab5.InputReader;
 import lab5.InputReader.NamedReader;
-import lab5.exceptions.IncorrectFieldException;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class TicketReader {
@@ -29,38 +29,62 @@ public class TicketReader {
         ticketAutoFieldReader.add(new NamedReader("ticket creation date", Ticket::readCreationDate));
     }
 
-    public static Ticket readTicket() {
-        return new Ticket(readTicketFields());
-    }
-
-    public static Ticket readTicket(Scanner scanner) throws IncorrectFieldException {
-        List<Object> ticketFields = InputReader.readObject(ticketReader, scanner);
-
-        ticketFields.add(new Coordinates(InputReader.readObject(coordinatesReader, scanner)));
-        ticketFields.add(new Person(InputReader.readObject(personReader, scanner)));
-        ticketFields.addAll(InputReader.readObject(ticketAutoFieldReader, scanner));
-
-        return new Ticket(ticketFields);
-    }
-
-    public static List<Object> readTicketFields() {
+    public static Ticket read(boolean isNew) throws InputReader.CannotReadObjectException {
         List<Object> ticketFields = InputReader.readObject(ticketReader);
 
         ticketFields.add(readCoordinates());
         ticketFields.add(readPerson());
 
-        return ticketFields;
+        if (!(isNew)) ticketFields.addAll(InputReader.readObject(ticketAutoFieldReader));
+
+        return create(ticketFields);
     }
 
-    public static Coordinates readCoordinates() {
-        return new Coordinates(InputReader.readObject(coordinatesReader));
+    public static Coordinates readCoordinates() throws InputReader.CannotReadObjectException {
+        List<Object> coordinatesFields = InputReader.readObject(coordinatesReader);
+
+        Long x = (Long) coordinatesFields.get(0);
+        Integer y = (Integer) coordinatesFields.get(1);
+
+        return new Coordinates(x, y);
     }
 
-    public static Person readPerson() {
-        return new Person(InputReader.readObject(personReader));
+    public static Person readPerson() throws InputReader.CannotReadObjectException {
+        List<Object> personFields = InputReader.readObject(personReader);
+
+        LocalDate birthday = (LocalDate) personFields.get(0);
+        double height = (double) personFields.get(1);
+        int weight = (int) personFields.get(2);
+        String passportID = (String) personFields.get(3);
+
+        return new Person(birthday, height, weight, passportID);
     }
 
-    public static String toCSV(Ticket ticket) {
-        return ticket.toCSV();
+    public static void update(Ticket ticket) throws InputReader.CannotReadObjectException {
+        List<Object> ticketFields = InputReader.readObject(ticketReader);
+
+        ticketFields.add(readCoordinates());
+        ticketFields.add(readPerson());
+
+        ticket.setName((String) ticketFields.get(0));
+        ticket.setPrice((int) ticketFields.get(1));
+        ticket.setType((TicketType) ticketFields.get(2));
+        ticket.setCoordinates((Coordinates) ticketFields.get(3));
+        ticket.setPerson((Person) ticketFields.get(4));
+    }
+
+    private static Ticket create(List<Object> ticketFields) {
+        String name = (String) ticketFields.get(0);
+        int price = (int) ticketFields.get(1);
+        TicketType type = (TicketType) ticketFields.get(2);
+        Coordinates coordinates = (Coordinates) ticketFields.get(3);
+        Person person = (Person) ticketFields.get(4);
+
+        if (ticketFields.size() == 7) {
+            long id = (long) ticketFields.get(5);
+            Date creationDate = (Date) ticketFields.get(6);
+
+            return new Ticket(name, price, type, coordinates, person, id, creationDate);
+        } else return new Ticket(name, price, type, coordinates, person);
     }
 }

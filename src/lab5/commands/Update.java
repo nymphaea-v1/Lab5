@@ -1,6 +1,7 @@
 package lab5.commands;
 
 import lab5.CollectionManager;
+import lab5.InputReader;
 import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.IncorrectArgumentException;
 import lab5.ticket.Ticket;
@@ -15,6 +16,11 @@ public class Update extends Command {
     public void execute(String argument) throws IncorrectArgumentException, CancelCommandException {
         if (argument == null) throw new IncorrectArgumentException("no argument");
 
+        if (CollectionManager.getSize() == 0) {
+            System.out.println("Collection is empty");
+            return;
+        }
+
         long id;
         try {
             id = Long.parseLong(argument);
@@ -28,7 +34,11 @@ public class Update extends Command {
             throw new IncorrectArgumentException("no elements with specified id found (" + argument + ")");
         }
 
-        ticket.setFields(TicketReader.readTicketFields());
+        try {
+            TicketReader.update(ticket);
+        } catch (InputReader.CannotReadObjectException e) {
+            throw new CancelCommandException(e.getMessage());
+        }
         System.out.printf("Element with id %d has been updated%n", id);
     }
 }

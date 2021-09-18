@@ -1,11 +1,11 @@
 package lab5;
 
-import lab5.exceptions.IncorrectFieldException;
 import lab5.ticket.Ticket;
 import lab5.ticket.TicketReader;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class CollectionManager {
@@ -48,23 +48,26 @@ public class CollectionManager {
         return collection.remove(key) != null;
     }
 
-    public static void addFromFile(File file) throws FileNotFoundException {
-        Scanner lineScanner = new Scanner(file);
-        while (lineScanner.hasNext()) {
-            Scanner fieldScanner = new Scanner(lineScanner.nextLine()).useDelimiter(", ");
+    public static void addFromFile(Path filePath) throws IOException {
+        InputReader.addToScan(filePath.toString());
+        long key = 0;
+
+        while (true) {
             try {
-                Ticket ticket = TicketReader.readTicket(fieldScanner);
-                collection.put(ticket.getId(), ticket);
-            } catch (IncorrectFieldException e) {
+                collection.put(key++, TicketReader.read(false));
+            } catch (InputReader.CannotReadObjectException e) {
+                if (e.getMessage().equals("end of file")) break;
+
                 System.out.println("Object initialization failed: " + e.getMessage());
             }
         }
     }
 
-    public static void initialize(File file) {
+    public static void initialize(String filePathString) {
         try {
-            filePath = file.toPath();
-            addFromFile(file);
+            filePath = Paths.get(filePathString);
+            System.out.println(filePath);
+            addFromFile(filePath);
         } catch (IOException e) {
             System.out.println("Specified file's access error");
             return;
@@ -98,7 +101,7 @@ public class CollectionManager {
         StringBuilder stringBuilder = new StringBuilder(getSize() * 100);
 
         for (Ticket ticket : collection.values()) {
-            stringBuilder.append(TicketReader.toCSV(ticket));
+            stringBuilder.append(ticket.toCSV());
             stringBuilder.append("\n");
         }
 

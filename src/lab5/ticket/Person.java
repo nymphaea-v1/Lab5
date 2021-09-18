@@ -13,19 +13,19 @@ public class Person {
     private final int weight;
     private final String passportID;
 
+    public Person(LocalDate birthday, double height, int weight, String passportID) {
+        this.birthday = birthday;
+        this.height = height;
+        this.weight = weight;
+        this.passportID = passportID.equals("") ? null : passportID;
+    }
+
     public LocalDate getBirthday() {
         return birthday;
     }
 
     public String getPassportID() {
         return passportID;
-    }
-
-    public Person(List<Object> fields) {
-        birthday = (LocalDate) fields.get(0);
-        height = (double) fields.get(1);
-        weight = (int) fields.get(2);
-        passportID = (String) fields.get(3);
     }
 
     public static LocalDate readBirthday(Scanner scanner) throws IncorrectFieldException {
@@ -71,7 +71,7 @@ public class Person {
     public static String readPassportID(Scanner scanner) throws IncorrectFieldException {
         String passportID = scanner.next().trim();
 
-        if (passportID.length() < 10) throw new IncorrectFieldException(passportID);
+        if (passportID.length() != 0 && passportID.length() < 10) throw new IncorrectFieldException(passportID);
 
         return passportID;
     }
@@ -83,19 +83,20 @@ public class Person {
     @Override
     public String toString() {
         return "Person{ " +
-                "birthday: " + birthday + ", " +
-                "height: " + height + ", " +
-                "weight: " + weight + ", " +
-                "passportID: " + passportID + "}";
+            "birthday: " + birthday + ", " +
+            "height: " + height + ", " +
+            "weight: " + weight + ", " +
+            "passportID: " + passportID + "}";
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Person)) return false;
+    public boolean equals(Object object) {
+        if (object == this) return true;
+        if (!(object instanceof Person)) return false;
 
-        Person person = (Person) o;
+        Person person = (Person) object;
 
-        return birthday.equals(person.getBirthday())
-                && (passportID == null || person.passportID == null || passportID.equals(person.getPassportID()));
+        boolean equalPassportID = passportID != null && passportID.equals(person.getPassportID());
+        return equalPassportID || (birthday.equals(person.birthday) && (height == person.height) && (weight == person.weight));
     }
 }
