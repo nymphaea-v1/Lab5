@@ -1,5 +1,6 @@
 package lab5;
 
+import lab5.exceptions.IncorrectFieldException;
 import lab5.ticket.Ticket;
 import lab5.ticket.TicketReader;
 
@@ -49,18 +50,20 @@ public class CollectionManager {
     }
 
     public static void addFromFile(Path filePath) throws IOException {
-        InputReader.addToScan(filePath.toString());
+        Scanner scanner = new Scanner(filePath);
         long key = 0;
 
-        while (true) {
+        while (scanner.hasNext()) {
             try {
-                collection.put(key++, TicketReader.read(false));
-            } catch (InputReader.CannotReadObjectException e) {
-                if (e.getMessage().equals("end of file")) break;
-
+                Ticket ticket = TicketReader.readTicket(new Scanner(scanner.nextLine()).useDelimiter(","));
+                if (getElementById(ticket.getId()) == null) collection.put(key++, ticket);
+                else System.out.println("Elements with the same id were found, the last one was skipped");
+            } catch (IncorrectFieldException e) {
                 System.out.println("Object initialization failed: " + e.getMessage());
             }
         }
+
+        scanner.close();
     }
 
     public static void initialize(String filePathString) {

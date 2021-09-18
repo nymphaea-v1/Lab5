@@ -4,7 +4,6 @@ import lab5.exceptions.IncorrectFieldException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Scanner;
 
 public class Person {
@@ -18,10 +17,6 @@ public class Person {
         this.height = height;
         this.weight = weight;
         this.passportID = passportID.equals("") ? null : passportID;
-    }
-
-    public LocalDate getBirthday() {
-        return birthday;
     }
 
     public String getPassportID() {

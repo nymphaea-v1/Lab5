@@ -1,7 +1,6 @@
 package lab5.commands;
 
 import lab5.CollectionManager;
-import lab5.InputReader;
 import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.IncorrectArgumentException;
 import lab5.ticket.Ticket;
@@ -34,11 +33,8 @@ public class Update extends Command {
             throw new IncorrectArgumentException("no elements with specified id found (" + argument + ")");
         }
 
-        try {
-            TicketReader.update(ticket);
-        } catch (InputReader.CannotReadObjectException e) {
-            throw new CancelCommandException(e.getMessage());
-        }
+        TicketReader.updateTicket(ticket);
+
         System.out.printf("Element with id %d has been updated%n", id);
     }
 }

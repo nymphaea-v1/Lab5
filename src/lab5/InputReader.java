@@ -12,10 +12,9 @@ public class InputReader {
     public static boolean fromConsole = true;
 
     public static void startReading() {
-        Scanner consoleScanner = new Scanner(System.in);
-        consoleScanner.useDelimiter("\n");
-
+        Scanner consoleScanner = new Scanner(System.in).useDelimiter("\n");
         scanners.add(consoleScanner);
+        fromConsole = true;
 
         while (!scanners.isEmpty()) {
             Scanner scanner = scanners.getLast();
@@ -78,7 +77,7 @@ public class InputReader {
             return;
         }
 
-        Scanner scanner = new Scanner(file).useDelimiter("\\r?\\n|\\r|, ");
+        Scanner scanner = new Scanner(file).useDelimiter("\\r?\\n|\\r");
 
         scanners.addLast(scanner);
         filePaths.addLast(absolutePath);
@@ -104,79 +103,52 @@ public class InputReader {
         fromConsole = true;
     }
 
-    public static List<Object> readObject(List<NamedReader> readers) throws CannotReadObjectException {
+    public static List<Object> readObject(List<Reader> readers) {
         return fromConsole ? readObjectConsole(readers) : readObjectFile(readers);
     }
 
-    private static List<Object> readObjectFile(List<NamedReader> readers) throws CannotReadObjectException {
+    private static List<Object> readObjectFile(List<Reader> readers) {
         List<Object> result = new ArrayList<>();
         Scanner scanner = scanners.getLast();
 
-        for (NamedReader reader : readers) {
-            if (!scanner.hasNext()) {
-                removeLastScanner();
-                throw new CannotReadObjectException("end of file");
-            }
+        for (Reader reader : readers) {
+            if (!scanner.hasNext()) throw new CancelCommandException("end of file");
 
             try {
                 result.add(reader.reader.read(scanner));
             } catch (IncorrectFieldException e) {
-
-                throw new CannotReadObjectException(e.getMessage());
+                throw new CancelCommandException(e.getMessage());
             }
         }
 
         return result;
     }
 
-    private static List<Object> readObjectConsole(List<NamedReader> readers) throws CannotReadObjectException {
+    private static List<Object> readObjectConsole(List<Reader> readers) {
         List<Object> result = new ArrayList<>();
         Scanner scanner = scanners.getFirst();
 
-        for (NamedReader reader : readers) {
-            Object element;
+        for (Reader reader : readers) {
+            Object field;
+
             while (true) {
                 try {
                     System.out.println("Enter " + reader.name + ":");
 
-                    element = reader.reader.read(scanner);
-                    if (element.toString().trim().equals("2?")) throw new CannotReadObjectException();
+                    field = reader.reader.read(scanner);
+                    if (field.toString().trim().equals("2?")) throw new CancelCommandException();
 
                     break;
                 } catch (IncorrectFieldException e) {
                     String message = e.getMessage().trim();
-                    if (message.equals("2?")) throw new CannotReadObjectException();
+                    if (message.equals("2?")) throw new CancelCommandException();
                     System.out.println("Invalid input (" + message + "). Try again:");
                 }
             }
 
-            result.add(element);
+            result.add(field);
         }
 
         return result;
-    }
-
-    public static class CannotReadObjectException extends Exception {
-        CannotReadObjectException(String message) {
-            super(message);
-        }
-
-        CannotReadObjectException() {
-            super();
-        }
-    }
-
-    public static class NamedReader {
-        public final String name;
-        public final Reader reader;
-
-        public NamedReader(String name, Reader reader) {
-            this.name = name;
-            this.reader = reader;
-        }
-
-        public interface Reader {
-            Object read(Scanner scanner) throws IncorrectFieldException;
-        }
     }
 }

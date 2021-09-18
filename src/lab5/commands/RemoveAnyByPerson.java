@@ -1,7 +1,6 @@
 package lab5.commands;
 
 import lab5.CollectionManager;
-import lab5.InputReader;
 import lab5.exceptions.CancelCommandException;
 import lab5.ticket.Person;
 import lab5.ticket.Ticket;
@@ -16,12 +15,7 @@ public class RemoveAnyByPerson extends Command {
 
     @Override
     public void execute(String argument) throws CancelCommandException {
-        Person person;
-        try {
-            person = TicketReader.readPerson();
-        } catch (InputReader.CannotReadObjectException e) {
-            throw new CancelCommandException(e.getMessage());
-        }
+        Person person = TicketReader.readPerson();
 
         for (Map.Entry<Long, Ticket> entry : CollectionManager.getEntrySet()) {
             if (!(entry.getValue().getPerson().equals(person))) continue;
