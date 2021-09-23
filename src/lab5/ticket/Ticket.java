@@ -160,7 +160,12 @@ public class Ticket implements Comparable<Ticket>{
     public int compareTo(Ticket ticket) {
         if (ticket.equals(this)) return 0;
 
-        int result = ticket.creationDate.compareTo(creationDate);
-        return result != 0 ? result : Integer.compare(ticket.price, price);
+        int result = ticket.type.compareTo(type);
+        if (result != 0) return result;
+
+        result = Integer.compare(ticket.price, price);
+        if (result != 0) return result;
+
+        return ticket.name.compareTo(name);
     }
 }
