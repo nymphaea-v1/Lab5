@@ -9,19 +9,19 @@ public class RemoveKey extends Command {
     }
 
     @Override
-    public void execute(String argument) throws IncorrectArgumentException {
-        if (argument == null) throw new IncorrectArgumentException("no argument");
+    public void execute(String keyString, CollectionManager collectionManager) throws IncorrectArgumentException {
+        if (keyString == null) throw new IncorrectArgumentException("no argument");
 
         try {
-            Long key = Long.parseLong(argument);
+            Long key = Long.parseLong(keyString);
 
-            if (!CollectionManager.removeElement(key)) {
+            if (!collectionManager.removeElement(key)) {
                 throw new IncorrectArgumentException("no elements with that key found");
             }
 
             System.out.printf("Element with key %d has been removed%n", key);
         } catch (NumberFormatException e) {
-            throw new IncorrectArgumentException(argument + " is not a valid key");
+            throw new IncorrectArgumentException(keyString + " is not a valid key");
         }
     }
 }

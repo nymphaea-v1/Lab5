@@ -8,41 +8,44 @@ import lab5.exceptions.IncorrectArgumentException;
 import java.util.*;
 
 public class CommandManager {
-    private static final HashMap<String, Command> commandMap = new HashMap<>();
+    private final HashMap<String, Command> commandMap = new HashMap<>();
+    private final CollectionManager collectionManager;
 
-    public static Collection<Command> getCommands() {
+    public Collection<Command> getCommands() {
         return commandMap.values();
     }
 
-    public static void setCommands() {
-        setCommand(new Help());
+    public CommandManager(CollectionManager collectionManager, InputReader inputReader) {
+        this.collectionManager = collectionManager;
+
+        setCommand(new Help(commandMap.values()));
         setCommand(new Info());
         setCommand(new Show());
         setCommand(new Clear());
         setCommand(new Save());
-        setCommand(new Exit());
+        setCommand(new Exit(inputReader));
 
         setCommand(new RemoveKey());
         setCommand(new RemoveLowerKey());
         setCommand(new CountByType());
         setCommand(new FilterStartsWithName());
-        setCommand(new ExecuteScript());
+        setCommand(new ExecuteScript(inputReader));
 
-        setCommand(new RemoveGreater());
-        setCommand(new RemoveLower());
-        setCommand(new RemoveAnyByPerson());
+        setCommand(new RemoveGreater(inputReader));
+        setCommand(new RemoveLower(inputReader));
+        setCommand(new RemoveAnyByPerson(inputReader));
 
-        setCommand(new Update());
-        setCommand(new Insert());
+        setCommand(new Update(inputReader));
+        setCommand(new Insert(inputReader));
     }
 
-    public static void execute(String commandName, String argument) throws CancelCommandException, IncorrectArgumentException, NoSuchCommandException {
+    public void execute(String commandName, String argument) throws CancelCommandException, IncorrectArgumentException, NoSuchCommandException {
         Command command = commandMap.get(commandName);
         if (command == null) throw new NoSuchCommandException();
-        command.execute(argument);
+        command.execute(argument, collectionManager);
     }
 
-    private static void setCommand(Command command) {
+    private void setCommand(Command command) {
         commandMap.put(command.getName(), command);
     }
 }

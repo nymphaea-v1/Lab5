@@ -1,31 +1,35 @@
 package lab5.commands;
 
 import lab5.CollectionManager;
+import lab5.InputReader;
 import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.IncorrectArgumentException;
 import lab5.ticket.TicketReader;
 
 public class Insert extends Command {
-    public Insert() {
+    private final InputReader inputReader;
+
+    public Insert(InputReader inputReader) {
         super("insert", "insert new element with specified key", "insert key");
+        this.inputReader = inputReader;
     }
 
     @Override
-    public void execute(String argument) throws IncorrectArgumentException, CancelCommandException {
-        if (argument == null) throw new IncorrectArgumentException("no argument");
+    public void execute(String keyString, CollectionManager collectionManager) throws IncorrectArgumentException, CancelCommandException {
+        if (keyString == null) throw new IncorrectArgumentException("no argument");
 
         Long key;
         try {
-            key = Long.parseLong(argument);
+            key = Long.parseLong(keyString);
         } catch (NumberFormatException e) {
-            throw new IncorrectArgumentException(argument + " is not a valid key");
+            throw new IncorrectArgumentException(keyString + " is not a valid key");
         }
 
-        if (CollectionManager.containsKey(key)) {
-            throw new IncorrectArgumentException(argument + " is not a valid key");
+        if (collectionManager.containsKey(key)) {
+            throw new IncorrectArgumentException(keyString + " is not a valid key");
         }
 
-        CollectionManager.setElement(key, TicketReader.readTicket());
+        collectionManager.setElement(key, TicketReader.readTicket(inputReader));
         System.out.println("Ticket has been added to the collection");
     }
 }

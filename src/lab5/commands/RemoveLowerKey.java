@@ -9,17 +9,17 @@ public class RemoveLowerKey extends Command {
     }
 
     @Override
-    public void execute(String argument) throws IncorrectArgumentException {
-        if (argument == null) throw new IncorrectArgumentException("no argument");
+    public void execute(String keyString, CollectionManager collectionManager) throws IncorrectArgumentException {
+        if (keyString == null) throw new IncorrectArgumentException("no argument");
 
         try {
-            Long key = Long.parseLong(argument);
-            int sizeBefore = CollectionManager.getSize();
+            Long key = Long.parseLong(keyString);
+            int sizeBefore = collectionManager.getSize();
 
-            CollectionManager.getEntrySet().removeIf(n -> n.getKey() < key);
-            System.out.println("Elements removed: " + (sizeBefore - CollectionManager.getSize()));
+            collectionManager.getEntrySet().removeIf(n -> n.getKey() < key);
+            System.out.println("Elements removed: " + (sizeBefore - collectionManager.getSize()));
         } catch (NumberFormatException e) {
-            throw new IncorrectArgumentException(argument + " is not a valid number");
+            throw new IncorrectArgumentException(keyString + " is not a valid number");
         }
     }
 }

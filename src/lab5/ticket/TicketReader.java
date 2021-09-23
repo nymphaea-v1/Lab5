@@ -8,10 +8,10 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class TicketReader {
-    public static List<Reader> personReaders = new ArrayList<>();
-    public static List<Reader> coordinatesReaders = new ArrayList<>();
-    public static List<Reader> ticketBasicReaders = new ArrayList<>();
-    public static List<Reader> ticketExtraReaders = new ArrayList<>();
+    private final static List<Reader> personReaders = new ArrayList<>();
+    private final static List<Reader> coordinatesReaders = new ArrayList<>();
+    private final static List<Reader> ticketBasicReaders = new ArrayList<>();
+    private final static List<Reader> ticketExtraReaders = new ArrayList<>();
 
     static {
         personReaders.add(new Reader("person birthday", Person::readBirthday));
@@ -24,7 +24,7 @@ public class TicketReader {
 
         ticketBasicReaders.add(new Reader("ticket name", Ticket::readName));
         ticketBasicReaders.add(new Reader("ticket price", Ticket::readPrice));
-        ticketBasicReaders.add(new Reader("ticket type " + Arrays.toString(TicketType.values()), Ticket::readTicketType));
+        ticketBasicReaders.add(new Reader("ticket type " + Arrays.toString(TicketType.values()), Ticket::readType));
 
         ticketExtraReaders.add(new Reader("ticket id", Ticket::readId));
         ticketExtraReaders.add(new Reader("ticket creation date", Ticket::readCreationDate));
@@ -48,32 +48,32 @@ public class TicketReader {
         return fields;
     }
 
-    public static Ticket readTicket() {
-        List<Object> ticketFields = InputReader.readObject(ticketBasicReaders);
+    public static Ticket readTicket(InputReader inputReader) {
+        List<Object> ticketFields = inputReader.readObject(ticketBasicReaders);
 
-        ticketFields.add(readCoordinates());
-        ticketFields.add(readPerson());
+        ticketFields.add(readCoordinates(inputReader));
+        ticketFields.add(readPerson(inputReader));
 
         return createTicket(ticketFields);
     }
 
-    public static Coordinates readCoordinates() {
-        List<Object> coordinatesFields = InputReader.readObject(coordinatesReaders);
+    public static Coordinates readCoordinates(InputReader inputReader) {
+        List<Object> coordinatesFields = inputReader.readObject(coordinatesReaders);
 
         return createCoordinates(coordinatesFields);
     }
 
-    public static Person readPerson() {
-        List<Object> personFields = InputReader.readObject(personReaders);
+    public static Person readPerson(InputReader inputReader) {
+        List<Object> personFields = inputReader.readObject(personReaders);
 
         return createPerson(personFields);
     }
 
-    public static void updateTicket(Ticket ticket) {
-        List<Object> ticketFields = InputReader.readObject(ticketBasicReaders);
+    public static void updateTicket(InputReader inputReader, Ticket ticket) {
+        List<Object> ticketFields = inputReader.readObject(ticketBasicReaders);
 
-        ticketFields.add(readCoordinates());
-        ticketFields.add(readPerson());
+        ticketFields.add(readCoordinates(inputReader));
+        ticketFields.add(readPerson(inputReader));
 
         ticket.setName((String) ticketFields.get(0));
         ticket.setPrice((int) ticketFields.get(1));

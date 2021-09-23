@@ -13,12 +13,12 @@ public class FilterStartsWithName extends Command {
     }
 
     @Override
-    public void execute(String argument) throws IncorrectArgumentException {
-        if (argument == null) throw new IncorrectArgumentException("no argument");
+    public void execute(String name, CollectionManager collectionManager) throws IncorrectArgumentException {
+        if (name == null) throw new IncorrectArgumentException("no argument");
 
         Collection<Ticket> tickets = new ArrayList<>();
-        for (Ticket ticket : CollectionManager.getValues()) {
-            if (ticket.getName().startsWith(argument)) tickets.add(ticket);
+        for (Ticket ticket : collectionManager.getValues()) {
+            if (ticket.getName().startsWith(name)) tickets.add(ticket);
         }
 
         System.out.println("Elements found: " + tickets.size());

@@ -121,13 +121,13 @@ public class Ticket implements Comparable<Ticket>{
         return price;
     }
 
-    public static TicketType readTicketType(Scanner scanner) throws IncorrectFieldException {
-        String ticketTypeString = scanner.next().trim();
+    public static TicketType readType(Scanner scanner) throws IncorrectFieldException {
+        String typeString = scanner.next().trim();
 
         try {
-            return TicketType.valueOf(ticketTypeString.toUpperCase());
+            return TicketType.valueOf(typeString.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IncorrectFieldException(ticketTypeString);
+            throw new IncorrectFieldException(typeString);
         }
     }
 

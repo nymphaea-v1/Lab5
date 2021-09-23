@@ -7,14 +7,21 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class InputReader {
-    private static final LinkedList<Scanner> scanners = new LinkedList<>();
-    private static final LinkedList<String> filePaths = new LinkedList<>();
-    public static boolean fromConsole = true;
+    private final LinkedList<Scanner> scanners;
+    private final LinkedList<String> filePaths;
+    public boolean fromConsole;
 
-    public static void startReading() {
+    public InputReader() {
+        scanners = new LinkedList<>();
+        filePaths = new LinkedList<>();
+        fromConsole = true;
+
+        scanners.add(new Scanner(System.in).useDelimiter("\n"));
+    }
+
+    public void startReading(CommandManager commandManager) {
         Scanner consoleScanner = new Scanner(System.in).useDelimiter("\n");
         scanners.add(consoleScanner);
-        fromConsole = true;
 
         while (!scanners.isEmpty()) {
             Scanner scanner = scanners.getLast();
@@ -38,7 +45,7 @@ public class InputReader {
 
             do {
                 try {
-                    CommandManager.execute(command, argument);
+                    commandManager.execute(command, argument);
                 } catch (IncorrectArgumentException | NoSuchCommandException | CancelCommandException e) {
                     System.out.println(command + ": " + e.getMessage());
 
@@ -59,14 +66,14 @@ public class InputReader {
         }
     }
 
-    public static void stopReading() {
+    public void stopReading() {
         scanners.clear();
         filePaths.clear();
 
         fromConsole = true;
     }
 
-    public static void addToScan(String path) throws FileNotFoundException {
+    public void addToScan(String path) throws FileNotFoundException {
         File file = new File(path);
         String absolutePath = file.getAbsolutePath();
 
@@ -85,14 +92,14 @@ public class InputReader {
         fromConsole = false;
     }
 
-    public static void removeLastScanner() {
+    public void removeLastScanner() {
         scanners.removeLast().close();
         filePaths.removeLast();
 
         if (filePaths.isEmpty()) fromConsole = true;
     }
 
-    private static void toConsole() {
+    private void toConsole() {
         Scanner scanner = scanners.getFirst();
 
         scanners.clear();
@@ -103,11 +110,11 @@ public class InputReader {
         fromConsole = true;
     }
 
-    public static List<Object> readObject(List<Reader> readers) {
+    public List<Object> readObject(List<Reader> readers) {
         return fromConsole ? readObjectConsole(readers) : readObjectFile(readers);
     }
 
-    private static List<Object> readObjectFile(List<Reader> readers) {
+    private List<Object> readObjectFile(List<Reader> readers) {
         List<Object> result = new ArrayList<>();
         Scanner scanner = scanners.getLast();
 
@@ -124,7 +131,7 @@ public class InputReader {
         return result;
     }
 
-    private static List<Object> readObjectConsole(List<Reader> readers) {
+    private List<Object> readObjectConsole(List<Reader> readers) {
         List<Object> result = new ArrayList<>();
         Scanner scanner = scanners.getFirst();
 

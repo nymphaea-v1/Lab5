@@ -10,13 +10,14 @@ import java.util.Date;
 
 public class Info extends Command {
     private final static String infoPattern = "Info about this collection:\nType: LinkedHashMap\nCreation date: %s\nLast modified date: %s\nNumber of elements: %d\n";
+
     public Info() {
         super("info", "display information about this collection");
     }
 
     @Override
-    public void execute(String argument) {
-        Path filePath = CollectionManager.getFilePath();
+    public void execute(String argument, CollectionManager collectionManager) {
+        Path filePath = collectionManager.getFilePath();
         String createTime = null;
         String updateTime = null;
 
@@ -25,6 +26,6 @@ public class Info extends Command {
             updateTime = new Date(Files.getLastModifiedTime(filePath).toMillis()).toString();
         } catch (IOException | NullPointerException ignored) {}
 
-        System.out.printf((infoPattern), createTime, updateTime, CollectionManager.getSize());
+        System.out.printf((infoPattern), createTime, updateTime, collectionManager.getSize());
     }
 }

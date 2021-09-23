@@ -10,18 +10,33 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class CollectionManager {
-    private static final LinkedHashMap<Long, Ticket> collection = new LinkedHashMap<>();
-    private static Path filePath;
+    private final LinkedHashMap<Long, Ticket> collection = new LinkedHashMap<>();
+    private Path filePath;
 
-    public static Path getFilePath() {
+    public CollectionManager(String filePathString) {
+        try {
+            filePath = Paths.get(filePathString);
+            addFromFile(filePath);
+        } catch (IOException e) {
+            System.out.println("Specified file's access error: " + e.getMessage());
+            return;
+        }
+
+        if (collection.size() != 0) {
+            sortByCreationDate(this);
+            System.out.printf("Collection with %d elements has been initialized%n", getSize());
+        } else System.out.println("File is empty");
+    }
+
+    public Path getFilePath() {
         return filePath;
     }
 
-    public static int getSize() {
+    public int getSize() {
         return collection.size();
     }
 
-    public static Ticket getElementById(long id) {
+    public Ticket getElementById(long id) {
         for (Map.Entry<Long, Ticket> entry : collection.entrySet()) {
             if (entry.getValue().getId() == id) return entry.getValue();
         }
@@ -29,27 +44,27 @@ public class CollectionManager {
         return null;
     }
 
-    public static Set<Map.Entry<Long, Ticket>> getEntrySet() {
+    public Set<Map.Entry<Long, Ticket>> getEntrySet() {
         return collection.entrySet();
     }
 
-    public static Collection<Ticket> getValues() {
+    public Collection<Ticket> getValues() {
         return collection.values();
     }
 
-    public static boolean containsKey(Long key) {
+    public boolean containsKey(Long key) {
         return collection.containsKey(key);
     }
 
-    public static void setElement(Long key, Ticket ticket) {
+    public void setElement(Long key, Ticket ticket) {
         collection.put(key, ticket);
     }
 
-    public static boolean removeElement(Long key) {
+    public boolean removeElement(Long key) {
         return collection.remove(key) != null;
     }
 
-    public static void addFromFile(Path filePath) throws IOException {
+    public void addFromFile(Path filePath) throws IOException {
         Scanner scanner = new Scanner(filePath);
         long key = 0;
 
@@ -66,27 +81,11 @@ public class CollectionManager {
         scanner.close();
     }
 
-    public static void initialize(String filePathString) {
-        try {
-            filePath = Paths.get(filePathString);
-            System.out.println(filePath);
-            addFromFile(filePath);
-        } catch (IOException e) {
-            System.out.println("Specified file's access error");
-            return;
-        }
-
-        if (collection.size() != 0) {
-            sortByCreationDate();
-            System.out.printf("Collection with %d elements has been initialized%n", getSize());
-        } else System.out.println("File is empty");
-    }
-
-    public static void clear() {
+    public void clear() {
         collection.clear();
     }
 
-    public static void save() throws IOException {
+    public void save() throws IOException {
         FileOutputStream outputStream = new FileOutputStream(filePath.toFile());
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
 
@@ -94,13 +93,13 @@ public class CollectionManager {
         outputStreamWriter.close();
     }
 
-    public static void print() {
+    public void print() {
         for (Map.Entry<Long, Ticket> entry : collection.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
 
-    private static String convertToCSV() {
+    private String convertToCSV() {
         StringBuilder stringBuilder = new StringBuilder(getSize() * 100);
 
         for (Ticket ticket : collection.values()) {
@@ -111,13 +110,13 @@ public class CollectionManager {
         return stringBuilder.toString();
     }
 
-    private static void sortByCreationDate() {
-        LinkedHashMap<Long, Ticket> collectionClone = new LinkedHashMap<>(collection);
+    private static void sortByCreationDate(CollectionManager collectionManager) {
+        LinkedHashMap<Long, Ticket> collectionClone = new LinkedHashMap<>(collectionManager.collection);
 
-        collection.clear();
+        collectionManager.clear();
 
         collectionClone.entrySet().stream()
             .sorted(Comparator.comparing(n -> n.getValue().getCreationDate()))
-            .forEach(entry -> collection.put(entry.getKey(), entry.getValue()));
+            .forEach(entry -> collectionManager.setElement(entry.getKey(), entry.getValue()));
     }
 }

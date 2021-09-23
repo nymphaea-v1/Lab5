@@ -11,18 +11,18 @@ public class CountByType extends Command {
     }
 
     @Override
-    public void execute(String argument) throws IncorrectArgumentException {
-        if (argument == null) throw new IncorrectArgumentException("no argument");
+    public void execute(String typeString, CollectionManager collectionManager) throws IncorrectArgumentException {
+        if (typeString == null) throw new IncorrectArgumentException("no argument");
 
-        TicketType ticketType;
+        TicketType type;
         try {
-            ticketType = TicketType.valueOf(argument.toUpperCase());
+            type = TicketType.valueOf(typeString.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IncorrectArgumentException(argument + " is not a valid type");
+            throw new IncorrectArgumentException(typeString + " is not a valid type");
         }
 
         int count = 0;
-        for (Ticket ticket : CollectionManager.getValues()) if (ticket.getType().equals(ticketType)) count++;
+        for (Ticket ticket : collectionManager.getValues()) if (ticket.getType().equals(type)) count++;
 
         System.out.println("Elements found: " + count);
     }

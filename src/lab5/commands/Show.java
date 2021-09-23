@@ -8,8 +8,8 @@ public class Show extends Command {
     }
 
     @Override
-    public void execute(String argument) {
-        int size = CollectionManager.getSize();
+    public void execute(String argument, CollectionManager collectionManager) {
+        int size = collectionManager.getSize();
 
         if (size == 0) {
             System.out.println("Collection is empty");
@@ -17,7 +17,7 @@ public class Show extends Command {
         }
 
         System.out.println("All elements of the collection:");
-        CollectionManager.print();
+        collectionManager.print();
         System.out.println("A total of " + size + " elements");
     }
 }

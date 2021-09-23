@@ -1,5 +1,6 @@
 package lab5.commands;
 
+import lab5.CollectionManager;
 import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.IncorrectArgumentException;
 
@@ -31,5 +32,5 @@ public abstract class Command {
         return pattern;
     }
 
-    abstract public void execute(String argument) throws IncorrectArgumentException, CancelCommandException;
+    abstract public void execute(String argument, CollectionManager collectionManager) throws IncorrectArgumentException, CancelCommandException;
 }

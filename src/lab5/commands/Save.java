@@ -10,10 +10,10 @@ public class Save extends Command {
     }
 
     @Override
-    public void execute(String argument) {
+        public void execute(String argument, CollectionManager collectionManager) {
         try {
-            CollectionManager.save();
-            System.out.println("Collection has been saved in the file: " + CollectionManager.getFilePath());
+            collectionManager.save();
+            System.out.println("Collection has been saved in the file: " + collectionManager.getFilePath());
         } catch (IOException e) {
             System.out.println("Failed to write a file: " + e.getMessage());
         }
