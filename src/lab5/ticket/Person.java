@@ -16,7 +16,7 @@ public class Person {
         this.birthday = birthday;
         this.height = height;
         this.weight = weight;
-        this.passportID = passportID.equals("") ? null : passportID;
+        this.passportID = passportID;
     }
 
     public String getPassportID() {
@@ -66,7 +66,8 @@ public class Person {
     public static String readPassportID(Scanner scanner) throws IncorrectFieldException {
         String passportID = scanner.next().trim();
 
-        if (passportID.length() != 0 && passportID.length() < 10 && !passportID.equals("null")) throw new IncorrectFieldException(passportID);
+        if (passportID.length() == 0 || passportID.equals("null")) return null;
+        if (passportID.length() < 10) throw new IncorrectFieldException(passportID);
 
         return passportID;
     }

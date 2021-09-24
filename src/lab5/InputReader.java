@@ -143,7 +143,7 @@ public class InputReader {
                     System.out.println("Enter " + reader.name + ":");
 
                     field = reader.reader.read(scanner);
-                    if (field.toString().trim().equals("2?")) throw new CancelCommandException();
+                    if (field != null && field.toString().trim().equals("2?")) throw new CancelCommandException();
 
                     break;
                 } catch (IncorrectFieldException e) {
