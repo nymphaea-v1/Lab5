@@ -13,6 +13,8 @@ public class TicketReader {
     private final static List<Reader> ticketBasicReaders = new ArrayList<>();
     private final static List<Reader> ticketExtraReaders = new ArrayList<>();
 
+    private long idCounter;
+
     static {
         personReaders.add(new Reader("person birthday", Person::readBirthday));
         personReaders.add(new Reader("person height", Person::readHeight));
@@ -30,7 +32,11 @@ public class TicketReader {
         ticketExtraReaders.add(new Reader("ticket creation date", Ticket::readCreationDate));
     }
 
-    public static Ticket readTicket(Scanner scanner) throws IncorrectFieldException {
+    public TicketReader(long initialId) {
+        idCounter = initialId;
+    }
+
+    public Ticket readTicket(Scanner scanner) throws IncorrectFieldException {
         List<Object> ticketFields = readObjectFields(scanner, ticketBasicReaders);
         ticketFields.add(createCoordinates(readObjectFields(scanner, coordinatesReaders)));
         ticketFields.add(createPerson(readObjectFields(scanner, personReaders)));
@@ -39,7 +45,7 @@ public class TicketReader {
         return createTicket(ticketFields);
     }
 
-    private static List<Object> readObjectFields(Scanner scanner, List<Reader> readers) throws IncorrectFieldException {
+    private List<Object> readObjectFields(Scanner scanner, List<Reader> readers) throws IncorrectFieldException {
         List<Object> fields = new ArrayList<>();
         for (Reader reader : readers) {
             if (!(scanner.hasNext())) throw new IncorrectFieldException("not enough fields");
@@ -48,28 +54,31 @@ public class TicketReader {
         return fields;
     }
 
-    public static Ticket readTicket(InputReader inputReader) {
+    public Ticket readNewTicket(InputReader inputReader) {
         List<Object> ticketFields = inputReader.readObject(ticketBasicReaders);
 
         ticketFields.add(readCoordinates(inputReader));
         ticketFields.add(readPerson(inputReader));
 
+        ticketFields.add(idCounter++);
+        ticketFields.add(new Date());
+
         return createTicket(ticketFields);
     }
 
-    public static Coordinates readCoordinates(InputReader inputReader) {
+    public Coordinates readCoordinates(InputReader inputReader) {
         List<Object> coordinatesFields = inputReader.readObject(coordinatesReaders);
 
         return createCoordinates(coordinatesFields);
     }
 
-    public static Person readPerson(InputReader inputReader) {
+    public Person readPerson(InputReader inputReader) {
         List<Object> personFields = inputReader.readObject(personReaders);
 
         return createPerson(personFields);
     }
 
-    public static void updateTicket(InputReader inputReader, Ticket ticket) {
+    public void updateTicket(InputReader inputReader, Ticket ticket) {
         List<Object> ticketFields = inputReader.readObject(ticketBasicReaders);
 
         ticketFields.add(readCoordinates(inputReader));
@@ -82,29 +91,28 @@ public class TicketReader {
         ticket.setPerson((Person) ticketFields.get(4));
     }
 
-    private static Ticket createTicket(List<Object> ticketFields) {
+    private Ticket createTicket(List<Object> ticketFields) {
         String name = (String) ticketFields.get(0);
         int price = (int) ticketFields.get(1);
         TicketType type = (TicketType) ticketFields.get(2);
         Coordinates coordinates = (Coordinates) ticketFields.get(3);
         Person person = (Person) ticketFields.get(4);
-
-        if (ticketFields.size() == 5) return new Ticket(name, price, type, coordinates, person);
-
         long id = (long) ticketFields.get(5);
         Date creationDate = (Date) ticketFields.get(6);
+
+        if (id >= idCounter) idCounter = id + 1;
 
         return new Ticket(name, price, type, coordinates, person, id, creationDate);
     }
 
-    private static Coordinates createCoordinates(List<Object> coordinatesFields) {
+    private Coordinates createCoordinates(List<Object> coordinatesFields) {
         Long x = (Long) coordinatesFields.get(0);
         Integer y = (Integer) coordinatesFields.get(1);
 
         return new Coordinates(x, y);
     }
 
-    private static Person createPerson(List<Object> personFields) {
+    private Person createPerson(List<Object> personFields) {
         LocalDate birthday = (LocalDate) personFields.get(0);
         double height = (double) personFields.get(1);
         int weight = (int) personFields.get(2);

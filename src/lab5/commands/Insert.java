@@ -9,11 +9,13 @@ import lab5.ticket.TicketReader;
 public class Insert extends Command {
     private final CollectionManager collectionManager;
     private final InputReader inputReader;
+    private final TicketReader ticketReader;
 
-    public Insert(CollectionManager collectionManager, InputReader inputReader) {
+    public Insert(CollectionManager collectionManager, InputReader inputReader, TicketReader ticketReader) {
         super("insert", "insert new element with specified key", "insert key");
         this.collectionManager = collectionManager;
         this.inputReader = inputReader;
+        this.ticketReader = ticketReader;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class Insert extends Command {
             throw new IncorrectArgumentException(keyString + " is not a valid key");
         }
 
-        collectionManager.setElement(key, TicketReader.readTicket(inputReader));
+        collectionManager.setElement(key, ticketReader.readNewTicket(inputReader));
         System.out.println("Ticket has been added to the collection");
     }
 }

@@ -13,10 +13,10 @@ public class CollectionManager {
     private final LinkedHashMap<Long, Ticket> collection = new LinkedHashMap<>();
     private Path filePath;
 
-    public CollectionManager(String filePathString) {
+    public CollectionManager(String filePathString, TicketReader ticketReader) {
         try {
             filePath = Paths.get(filePathString);
-            addFromFile(filePath);
+            addFromFile(filePath, ticketReader);
         } catch (IOException e) {
             System.out.println("Specified file's access error: " + e.getMessage());
             return;
@@ -64,13 +64,13 @@ public class CollectionManager {
         return collection.remove(key) != null;
     }
 
-    public void addFromFile(Path filePath) throws IOException {
+    public void addFromFile(Path filePath, TicketReader ticketReader) throws IOException {
         Scanner scanner = new Scanner(filePath);
         long key = 0;
 
         while (scanner.hasNext()) {
             try {
-                Ticket ticket = TicketReader.readTicket(new Scanner(scanner.nextLine()).useDelimiter(","));
+                Ticket ticket = ticketReader.readTicket(new Scanner(scanner.nextLine()).useDelimiter(","));
                 if (getElementById(ticket.getId()) == null) collection.put(key++, ticket);
                 else System.out.println("Elements with the same id were found, the last one was skipped");
             } catch (IncorrectFieldException e) {

@@ -5,8 +5,6 @@ import lab5.exceptions.IncorrectFieldException;
 import java.util.*;
 
 public class Ticket implements Comparable<Ticket>{
-    private static long largestId = 0;
-
     private final long id;
     private final Date creationDate;
 
@@ -24,18 +22,6 @@ public class Ticket implements Comparable<Ticket>{
         this.person = person;
         this.id = id;
         this.creationDate = creationDate;
-
-        if (id > largestId) largestId = id;
-    }
-
-    public Ticket(String name, int price, TicketType type, Coordinates coordinates, Person person) {
-        this.name = name;
-        this.price = price;
-        this.type = type;
-        this.coordinates = coordinates;
-        this.person = person;
-        this.id = ++largestId;
-        this.creationDate = new Date();
     }
 
     public String getName() {

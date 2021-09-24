@@ -10,11 +10,13 @@ import lab5.ticket.TicketReader;
 public class Update extends Command {
     private final CollectionManager collectionManager;
     private final InputReader inputReader;
+    private final TicketReader ticketReader;
 
-    public Update(CollectionManager collectionManager, InputReader inputReader) {
+    public Update(CollectionManager collectionManager, InputReader inputReader, TicketReader ticketReader) {
         super("update", "update element with specified id", "update id");
         this.collectionManager = collectionManager;
         this.inputReader = inputReader;
+        this.ticketReader = ticketReader;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class Update extends Command {
             throw new IncorrectArgumentException("no elements with specified id found (" + idString + ")");
         }
 
-        TicketReader.updateTicket(inputReader, ticket);
+        ticketReader.updateTicket(inputReader, ticket);
 
         System.out.printf("Element with id %d has been updated%n", id);
     }
