@@ -32,5 +32,5 @@ public abstract class Command {
         return pattern;
     }
 
-    abstract public void execute(String argument, CollectionManager collectionManager) throws IncorrectArgumentException, CancelCommandException;
+    abstract public void execute(String argument) throws IncorrectArgumentException, CancelCommandException;
 }

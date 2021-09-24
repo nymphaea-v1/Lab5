@@ -7,15 +7,17 @@ import lab5.exceptions.IncorrectArgumentException;
 import lab5.ticket.TicketReader;
 
 public class Insert extends Command {
+    private final CollectionManager collectionManager;
     private final InputReader inputReader;
 
-    public Insert(InputReader inputReader) {
+    public Insert(CollectionManager collectionManager, InputReader inputReader) {
         super("insert", "insert new element with specified key", "insert key");
+        this.collectionManager = collectionManager;
         this.inputReader = inputReader;
     }
 
     @Override
-    public void execute(String keyString, CollectionManager collectionManager) throws IncorrectArgumentException, CancelCommandException {
+    public void execute(String keyString) throws IncorrectArgumentException, CancelCommandException {
         if (keyString == null) throw new IncorrectArgumentException("no argument");
 
         Long key;

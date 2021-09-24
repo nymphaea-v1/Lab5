@@ -1,6 +1,5 @@
 package lab5.commands;
 
-import lab5.CollectionManager;
 import lab5.InputReader;
 import lab5.exceptions.IncorrectArgumentException;
 
@@ -15,7 +14,7 @@ public class ExecuteScript extends Command {
     }
 
     @Override
-    public void execute(String filePath, CollectionManager collectionManager) throws IncorrectArgumentException {
+    public void execute(String filePath) throws IncorrectArgumentException {
         if (filePath == null) throw new IncorrectArgumentException("no argument");
 
         try {

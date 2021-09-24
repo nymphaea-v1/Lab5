@@ -9,14 +9,16 @@ import java.nio.file.attribute.FileTime;
 import java.util.Date;
 
 public class Info extends Command {
+    private final CollectionManager collectionManager;
     private final static String infoPattern = "Info about this collection:\nType: LinkedHashMap\nCreation date: %s\nLast modified date: %s\nNumber of elements: %d\n";
 
-    public Info() {
+    public Info(CollectionManager collectionManager) {
         super("info", "display information about this collection");
+        this.collectionManager = collectionManager;
     }
 
     @Override
-    public void execute(String argument, CollectionManager collectionManager) {
+    public void execute(String argument) {
         Path filePath = collectionManager.getFilePath();
         String createTime = null;
         String updateTime = null;

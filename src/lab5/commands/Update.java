@@ -8,15 +8,17 @@ import lab5.ticket.Ticket;
 import lab5.ticket.TicketReader;
 
 public class Update extends Command {
+    private final CollectionManager collectionManager;
     private final InputReader inputReader;
 
-    public Update(InputReader inputReader) {
+    public Update(CollectionManager collectionManager, InputReader inputReader) {
         super("update", "update element with specified id", "update id");
+        this.collectionManager = collectionManager;
         this.inputReader = inputReader;
     }
 
     @Override
-    public void execute(String idString, CollectionManager collectionManager) throws IncorrectArgumentException, CancelCommandException {
+    public void execute(String idString) throws IncorrectArgumentException, CancelCommandException {
         if (idString == null) throw new IncorrectArgumentException("no argument");
 
         if (collectionManager.getSize() == 0) {

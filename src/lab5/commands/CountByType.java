@@ -6,12 +6,15 @@ import lab5.ticket.Ticket;
 import lab5.ticket.TicketType;
 
 public class CountByType extends Command {
-    public CountByType() {
+    private final CollectionManager collectionManager;
+
+    public CountByType(CollectionManager collectionManager) {
         super("count_by_type", "display the number of elements with specified ticket type", "count_by_type type");
+        this.collectionManager = collectionManager;
     }
 
     @Override
-    public void execute(String typeString, CollectionManager collectionManager) throws IncorrectArgumentException {
+    public void execute(String typeString) throws IncorrectArgumentException {
         if (typeString == null) throw new IncorrectArgumentException("no argument");
 
         TicketType type;

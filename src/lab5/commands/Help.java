@@ -1,7 +1,5 @@
 package lab5.commands;
 
-import lab5.CollectionManager;
-
 import java.util.Collection;
 
 public class Help extends Command {
@@ -13,7 +11,7 @@ public class Help extends Command {
     }
 
     @Override
-    public void execute(String argument, CollectionManager collectionManager) {
+    public void execute(String argument) {
         System.out.println("List of all available commands:");
         for (Command command : commands) {
             System.out.println(command.getPattern() + " - " + command.getDescription());

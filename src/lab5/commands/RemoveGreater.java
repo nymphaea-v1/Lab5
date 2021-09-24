@@ -7,15 +7,17 @@ import lab5.ticket.Ticket;
 import lab5.ticket.TicketReader;
 
 public class RemoveGreater extends Command {
+    private final CollectionManager collectionManager;
     private final InputReader inputReader;
 
-    public RemoveGreater(InputReader inputReader) {
+    public RemoveGreater(CollectionManager collectionManager, InputReader inputReader) {
         super("remove_greater", "remove all greater elements");
+        this.collectionManager = collectionManager;
         this.inputReader = inputReader;
     }
 
     @Override
-    public void execute(String argument, CollectionManager collectionManager) throws CancelCommandException {
+    public void execute(String argument) throws CancelCommandException {
         Ticket ticket = TicketReader.readTicket(inputReader);
         int sizeBefore = collectionManager.getSize();
 

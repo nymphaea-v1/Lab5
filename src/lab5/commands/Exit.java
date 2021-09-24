@@ -1,6 +1,5 @@
 package lab5.commands;
 
-import lab5.CollectionManager;
 import lab5.InputReader;
 
 public class Exit extends Command {
@@ -12,7 +11,7 @@ public class Exit extends Command {
     }
 
     @Override
-    public void execute(String argument, CollectionManager collectionManager) {
+    public void execute(String argument) {
         inputReader.stopReading();
     }
 }

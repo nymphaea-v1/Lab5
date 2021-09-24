@@ -4,12 +4,15 @@ import lab5.CollectionManager;
 import lab5.exceptions.IncorrectArgumentException;
 
 public class RemoveKey extends Command {
-    public RemoveKey() {
+    private final CollectionManager collectionManager;
+
+    public RemoveKey(CollectionManager collectionManager) {
         super("remove_key", "remove element with specified key", "remove_key key");
+        this.collectionManager = collectionManager;
     }
 
     @Override
-    public void execute(String keyString, CollectionManager collectionManager) throws IncorrectArgumentException {
+    public void execute(String keyString) throws IncorrectArgumentException {
         if (keyString == null) throw new IncorrectArgumentException("no argument");
 
         try {

@@ -10,15 +10,17 @@ import lab5.ticket.TicketReader;
 import java.util.Map;
 
 public class RemoveAnyByPerson extends Command {
+    private final CollectionManager collectionManager;
     private final InputReader inputReader;
 
-    public RemoveAnyByPerson(InputReader inputReader) {
+    public RemoveAnyByPerson(CollectionManager collectionManager, InputReader inputReader) {
         super("remove_any_by_person", "remove one element with specified person");
+        this.collectionManager = collectionManager;
         this.inputReader = inputReader;
     }
 
     @Override
-    public void execute(String argument, CollectionManager collectionManager) throws CancelCommandException {
+    public void execute(String argument) throws CancelCommandException {
         Person person = TicketReader.readPerson(inputReader);
 
         for (Map.Entry<Long, Ticket> entry : collectionManager.getEntrySet()) {

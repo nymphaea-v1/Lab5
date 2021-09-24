@@ -8,12 +8,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class FilterStartsWithName extends Command {
-    public FilterStartsWithName() {
+    private final CollectionManager collectionManager;
+
+    public FilterStartsWithName(CollectionManager collectionManager) {
         super("filter_starts_with_name", "display all elements with a name starting with specified substring", "filter_starts_with_name name");
+        this.collectionManager = collectionManager;
     }
 
     @Override
-    public void execute(String name, CollectionManager collectionManager) throws IncorrectArgumentException {
+    public void execute(String name) throws IncorrectArgumentException {
         if (name == null) throw new IncorrectArgumentException("no argument");
 
         Collection<Ticket> tickets = new ArrayList<>();

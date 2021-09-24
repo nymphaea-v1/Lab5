@@ -3,12 +3,15 @@ package lab5.commands;
 import lab5.CollectionManager;
 
 public class Show extends Command {
-    public Show() {
+    private final CollectionManager collectionManager;
+
+    public Show(CollectionManager collectionManager) {
         super("show", "display this collection");
+        this.collectionManager = collectionManager;
     }
 
     @Override
-    public void execute(String argument, CollectionManager collectionManager) {
+    public void execute(String argument) {
         int size = collectionManager.getSize();
 
         if (size == 0) {
