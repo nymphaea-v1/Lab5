@@ -31,7 +31,14 @@ public class InputReader {
                 continue;
             }
 
-            String next = scanner.nextLine().trim();
+            String next;
+            try {
+                next = scanner.nextLine().trim();
+            } catch (NoSuchElementException e) {
+                stopReading();
+                return;
+            }
+
             if (next.isEmpty()) continue;
 
             String command;
