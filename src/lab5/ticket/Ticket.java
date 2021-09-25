@@ -150,6 +150,11 @@ public class Ticket implements Comparable<Ticket>{
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(name, price, type, coordinates, person, id, creationDate);
+    }
+
+    @Override
     public int compareTo(Ticket ticket) {
         if (ticket.equals(this)) return 0;
 

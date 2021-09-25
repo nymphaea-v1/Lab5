@@ -4,6 +4,7 @@ import lab5.exceptions.IncorrectFieldException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Person {
@@ -94,5 +95,10 @@ public class Person {
 
         boolean equalPassportID = passportID != null && passportID.equals(person.getPassportID());
         return equalPassportID || (birthday.equals(person.birthday) && (height == person.height) && (weight == person.weight));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(birthday, height, weight, passportID);
     }
 }
