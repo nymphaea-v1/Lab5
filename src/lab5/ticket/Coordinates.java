@@ -2,6 +2,7 @@ package lab5.ticket;
 
 import lab5.exceptions.IncorrectFieldException;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 class Coordinates {
@@ -49,6 +50,16 @@ class Coordinates {
         if (y > 907) throw new IncorrectFieldException(y);
 
         return y;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        Coordinates coordinates = (Coordinates) object;
+
+        return x.equals(coordinates.x) && y.equals(coordinates.y);
     }
 
     @Override

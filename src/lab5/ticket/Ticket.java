@@ -135,11 +135,18 @@ public class Ticket implements Comparable<Ticket>{
 
     @Override
     public boolean equals(Object object) {
-        if (object == this) return true;
-        if (!(object instanceof Ticket)) return false;
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
 
         Ticket ticket = (Ticket) object;
-        return ticket.id == id;
+
+        return name.equals(ticket.name)
+            && price == ticket.price
+            && type.equals(ticket.type)
+            && coordinates.equals(ticket.coordinates)
+            && person.equals(ticket.person)
+            && id == ticket.id
+            && creationDate.equals(ticket.creationDate);
     }
 
     @Override
@@ -149,7 +156,7 @@ public class Ticket implements Comparable<Ticket>{
         int result = ticket.type.compareTo(type);
         if (result != 0) return result;
 
-        result = Integer.compare(ticket.price, price);
+        result = Integer.compare(price, ticket.price);
         if (result != 0) return result;
 
         return ticket.name.compareTo(name);
