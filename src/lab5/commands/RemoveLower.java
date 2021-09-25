@@ -9,18 +9,16 @@ import lab5.ticket.TicketReader;
 public class RemoveLower extends Command {
     private final CollectionManager collectionManager;
     private final InputReader inputReader;
-    private final TicketReader ticketReader;
 
-    public RemoveLower(CollectionManager collectionManager, InputReader inputReader, TicketReader ticketReader) {
+    public RemoveLower(CollectionManager collectionManager, InputReader inputReader) {
         super("remove_lower", "remove all lower elements");
         this.collectionManager = collectionManager;
         this.inputReader = inputReader;
-        this.ticketReader = ticketReader;
     }
 
     @Override
     public void execute(String argument) throws CancelCommandException {
-        Ticket ticket = ticketReader.readNewTicket(inputReader);
+        Ticket ticket = TicketReader.readNewTicket(inputReader, collectionManager.getNextId());
         int sizeBefore = collectionManager.getSize();
 
         collectionManager.getEntrySet().removeIf(n -> n.getValue().compareTo(ticket) < 0);

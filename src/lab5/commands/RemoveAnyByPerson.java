@@ -12,18 +12,16 @@ import java.util.Map;
 public class RemoveAnyByPerson extends Command {
     private final CollectionManager collectionManager;
     private final InputReader inputReader;
-    private final TicketReader ticketReader;
 
-    public RemoveAnyByPerson(CollectionManager collectionManager, InputReader inputReader, TicketReader ticketReader) {
+    public RemoveAnyByPerson(CollectionManager collectionManager, InputReader inputReader) {
         super("remove_any_by_person", "remove one element with specified person");
         this.collectionManager = collectionManager;
         this.inputReader = inputReader;
-        this.ticketReader = ticketReader;
     }
 
     @Override
     public void execute(String argument) throws CancelCommandException {
-        Person person = ticketReader.readPerson(inputReader);
+        Person person = TicketReader.readPerson(inputReader);
 
         for (Map.Entry<Long, Ticket> entry : collectionManager.getEntrySet()) {
             if (!(entry.getValue().getPerson().equals(person))) continue;

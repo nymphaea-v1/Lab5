@@ -12,11 +12,14 @@ import java.util.*;
 public class CollectionManager {
     private final LinkedHashMap<Long, Ticket> collection = new LinkedHashMap<>();
     private Path filePath;
+    private long nextId;
 
-    public CollectionManager(String filePathString, TicketReader ticketReader) {
+    public CollectionManager(String filePathString) {
         try {
             filePath = Paths.get(filePathString);
-            addFromFile(filePath, ticketReader);
+            nextId = 0;
+
+            addFromFile(filePath);
         } catch (IOException e) {
             System.out.println("Specified file's access error: " + e.getMessage());
             return;
@@ -30,6 +33,10 @@ public class CollectionManager {
 
     public Path getFilePath() {
         return filePath;
+    }
+
+    public long getNextId() {
+        return nextId;
     }
 
     public int getSize() {
@@ -56,23 +63,30 @@ public class CollectionManager {
         return collection.containsKey(key);
     }
 
-    public void setElement(Long key, Ticket ticket) {
+    public boolean setElement(Long key, Ticket ticket) {
+        long id = ticket.getId();
+
+        if (getElementById(id) != null) return false;
+
         collection.put(key, ticket);
+        if (id >= nextId) nextId = id + 1;
+        return true;
     }
 
     public boolean removeElement(Long key) {
         return collection.remove(key) != null;
     }
 
-    public void addFromFile(Path filePath, TicketReader ticketReader) throws IOException {
+    public void addFromFile(Path filePath) throws IOException {
         Scanner scanner = new Scanner(filePath);
         long key = 0;
 
         while (scanner.hasNext()) {
             try {
-                Ticket ticket = ticketReader.readTicket(new Scanner(scanner.nextLine()).useDelimiter(","));
-                if (getElementById(ticket.getId()) == null) collection.put(key++, ticket);
-                else System.out.println("Elements with the same id were found, the last one was skipped");
+                Ticket ticket = TicketReader.readTicket(new Scanner(scanner.nextLine()).useDelimiter(","));
+                if (!setElement(key++, ticket)) {
+                    System.out.println("Elements with the same id were found, the last one was skipped");
+                }
             } catch (IncorrectFieldException e) {
                 System.out.println("Object initialization failed: " + e.getMessage());
             }

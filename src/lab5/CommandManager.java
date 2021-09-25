@@ -4,7 +4,6 @@ import lab5.commands.*;
 import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.NoSuchCommandException;
 import lab5.exceptions.IncorrectArgumentException;
-import lab5.ticket.TicketReader;
 
 import java.util.*;
 
@@ -15,7 +14,7 @@ public class CommandManager {
         return commandMap.values();
     }
 
-    public CommandManager(CollectionManager collectionManager, InputReader inputReader, TicketReader ticketReader) {
+    public CommandManager(CollectionManager collectionManager, InputReader inputReader) {
         setCommand(new Help(commandMap.values()));
         setCommand(new Info(collectionManager));
         setCommand(new Show(collectionManager));
@@ -29,12 +28,12 @@ public class CommandManager {
         setCommand(new FilterStartsWithName(collectionManager));
         setCommand(new ExecuteScript(inputReader));
 
-        setCommand(new RemoveGreater(collectionManager, inputReader, ticketReader));
-        setCommand(new RemoveLower(collectionManager, inputReader, ticketReader));
-        setCommand(new RemoveAnyByPerson(collectionManager, inputReader, ticketReader));
+        setCommand(new RemoveGreater(collectionManager, inputReader));
+        setCommand(new RemoveLower(collectionManager, inputReader));
+        setCommand(new RemoveAnyByPerson(collectionManager, inputReader));
 
-        setCommand(new Update(collectionManager, inputReader, ticketReader));
-        setCommand(new Insert(collectionManager, inputReader, ticketReader));
+        setCommand(new Update(collectionManager, inputReader));
+        setCommand(new Insert(collectionManager, inputReader));
     }
 
     public void execute(String commandName, String argument) throws CancelCommandException, IncorrectArgumentException, NoSuchCommandException {
