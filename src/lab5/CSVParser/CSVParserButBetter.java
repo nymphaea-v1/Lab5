@@ -15,7 +15,11 @@ public class CSVParserButBetter implements Iterator<String> {
 
     @Override
     public boolean hasNext() {
-        return scanner.skip("[\\s\n]*").hasNext();
+        while (scanner.hasNext("\\s")) {
+            if (!lineSkip && scanner.next().equals("\n")) lineSkip = true;
+        }
+
+        return scanner.hasNext();
     }
 
     @Override
@@ -68,7 +72,7 @@ public class CSVParserButBetter implements Iterator<String> {
     }
 
     public void skipLine() {
-        scanner.nextLine();
+        System.out.println(scanner.nextLine());
         lineSkip = true;
     }
 
