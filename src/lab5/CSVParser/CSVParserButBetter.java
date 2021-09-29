@@ -15,7 +15,7 @@ public class CSVParserButBetter implements Iterator<String> {
 
     @Override
     public boolean hasNext() {
-        return scanner.hasNext();
+        return scanner.skip("[\\s\n]*").hasNext();
     }
 
     @Override
@@ -53,18 +53,14 @@ public class CSVParserButBetter implements Iterator<String> {
             // check if quotation mark is inside an element
             // if so, add it to result and go to the next symbol
             if (!scanner.hasNext()) return resultBuilder.toString().trim();
-            next = scanner.next();
-            if (next.equals("\"")) {
-                resultBuilder.append(next);
+            if (scanner.hasNext("\"")) {
+                resultBuilder.append(scanner.next());
                 continue;
             }
 
             // skip any left symbols to the end
-            if (!scanner.hasNext()) return resultBuilder.toString().trim();
-            if (!next.matches("[,\n]")) {
-                next = scanner.skip("\\s*").next();
-                if (!next.matches("[,\n]")) throw new CSVParsingException("symbol after ending quotation mark");
-            }
+            next = scanner.skip("\\s*").next();
+            if (!next.matches("[,\n]")) throw new CSVParsingException("symbol after ending quotation mark");
 
             lineSkip = next.matches("\n");
             return resultBuilder.toString().trim();

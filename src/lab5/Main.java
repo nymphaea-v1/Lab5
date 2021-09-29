@@ -1,7 +1,5 @@
 package lab5;
 
-import java.io.IOException;
-
 public class Main {
     public static void main(String[] args) {
         String filePath = args.length == 0 ? "input.csv" : args[0];
