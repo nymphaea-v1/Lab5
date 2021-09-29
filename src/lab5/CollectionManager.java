@@ -89,7 +89,7 @@ public class CollectionManager {
                     System.out.println("Elements with the same id were found, the last one was skipped");
                 }
             } catch (IncorrectFieldException | CSVParsingException | NumberFormatException e) {
-                if (!parser.lineSkip) parser.skipLine();
+                if (parser.hasNext() && !parser.lineSkip) parser.skipLine();
                 System.out.println("Object initialization failed: " + e.getMessage());
             } catch (NoSuchElementException e) {
                 System.out.println("Object initialization failed: the end of file");

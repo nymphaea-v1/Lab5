@@ -24,11 +24,13 @@ public class CSVParserButBetter implements Iterator<String> {
         String next = scanner.skip("\\s*").next();
 
         // check if the element is not surrounded by quotation marks
-        // if so, read an entire element until the end (comma or line separator) and return it
+        // if so, read an entire element until the end (comma, line separator or the end of file) and return it
         if (!next.equals("\"")) {
             while (!next.matches("[,\n]")) {
                 if (next.equals("\"")) throw new CSVParsingException(("quotation mark inside an unquoted element"));
                 resultBuilder.append(next);
+
+                if (!scanner.hasNext()) return resultBuilder.toString().trim();
                 next = scanner.next();
             }
 
@@ -36,28 +38,29 @@ public class CSVParserButBetter implements Iterator<String> {
             return resultBuilder.toString().trim();
         }
 
-        // skip the first quotation mark
-        next = scanner.next();
-
         while (true) {
+            // go to the next symbol (skip starting quotation mark)
+            if (!scanner.hasNext()) throw new CSVParsingException("no ending quotation mark");
+            next = scanner.next();
+
             // check if the next symbol is not a quotation mark
             // if so, add it to result and go to the next symbol
             if (!next.equals("\"")) {
                 resultBuilder.append(next);
-                next = scanner.next();
                 continue;
             }
 
             // check if quotation mark is inside an element
             // if so, add it to result and go to the next symbol
+            if (!scanner.hasNext()) return resultBuilder.toString().trim();
             next = scanner.next();
             if (next.equals("\"")) {
                 resultBuilder.append(next);
-                next = scanner.next();
                 continue;
             }
 
             // skip any left symbols to the end
+            if (!scanner.hasNext()) return resultBuilder.toString().trim();
             if (!next.matches("[,\n]")) {
                 next = scanner.skip("\\s*").next();
                 if (!next.matches("[,\n]")) throw new CSVParsingException("symbol after ending quotation mark");
