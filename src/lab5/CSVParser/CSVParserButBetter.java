@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class CSVParserButBetter implements Iterator<String> {
     private final Scanner scanner;
     public boolean lineSkip = false;
+    private static final String lineSeparator = "\\r?\\n|\\r";
 
     public CSVParserButBetter(Path source) throws IOException {
         scanner = new Scanner(source).useDelimiter("");
@@ -16,7 +17,7 @@ public class CSVParserButBetter implements Iterator<String> {
     @Override
     public boolean hasNext() {
         while (scanner.hasNext("\\s")) {
-            if (!lineSkip && scanner.next().equals("\n")) lineSkip = true;
+            if (!lineSkip && scanner.next().matches(lineSeparator)) lineSkip = true;
         }
 
         return scanner.hasNext();
@@ -30,7 +31,7 @@ public class CSVParserButBetter implements Iterator<String> {
         // check if the element is not surrounded by quotation marks
         // if so, read an entire element until the end (comma, line separator or the end of file) and return it
         if (!next.equals("\"")) {
-            while (!next.matches("[,\n]")) {
+            while (!next.equals(",") && !next.matches(lineSeparator)) {
                 if (next.equals("\"")) throw new CSVParsingException(("quotation mark inside an unquoted element"));
                 resultBuilder.append(next);
 
@@ -38,7 +39,7 @@ public class CSVParserButBetter implements Iterator<String> {
                 next = scanner.next();
             }
 
-            lineSkip = next.matches("\n");
+            lineSkip = next.matches(lineSeparator);
             return resultBuilder.toString().trim();
         }
 
@@ -64,9 +65,9 @@ public class CSVParserButBetter implements Iterator<String> {
 
             // skip any left symbols to the end
             next = scanner.skip("\\s*").next();
-            if (!next.matches("[,\n]")) throw new CSVParsingException("symbol after ending quotation mark");
+            if (!next.equals(",") && !next.matches(lineSeparator)) throw new CSVParsingException("symbol after ending quotation mark");
 
-            lineSkip = next.matches("\n");
+            lineSkip = next.matches(lineSeparator);
             return resultBuilder.toString().trim();
         }
     }
