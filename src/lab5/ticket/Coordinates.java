@@ -2,8 +2,8 @@ package lab5.ticket;
 
 import lab5.exceptions.IncorrectFieldException;
 
+import java.util.Iterator;
 import java.util.Objects;
-import java.util.Scanner;
 
 class Coordinates {
     private final Long x;
@@ -22,8 +22,8 @@ class Coordinates {
         return y;
     }
 
-    public static Long readX(Scanner scanner) throws IncorrectFieldException {
-        String xString = scanner.next().trim();
+    public static Long readX(Iterator<String> iterator) throws IncorrectFieldException {
+        String xString = iterator.next().trim();
         long x;
 
         try {
@@ -37,8 +37,8 @@ class Coordinates {
         return x;
     }
 
-    public static Integer readY(Scanner scanner) throws IncorrectFieldException {
-        String yString = scanner.next().trim();
+    public static Integer readY(Iterator<String> iterator) throws IncorrectFieldException {
+        String yString = iterator.next().trim();
         int y;
 
         try {

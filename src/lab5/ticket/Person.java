@@ -4,8 +4,8 @@ import lab5.exceptions.IncorrectFieldException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Iterator;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class Person {
     private final LocalDate birthday;
@@ -24,8 +24,8 @@ public class Person {
         return passportID;
     }
 
-    public static LocalDate readBirthday(Scanner scanner) throws IncorrectFieldException {
-        String birthdayString = scanner.next().trim();
+    public static LocalDate readBirthday(Iterator<String> iterator) throws IncorrectFieldException {
+        String birthdayString = iterator.next().trim();
 
         try {
             return LocalDate.parse(birthdayString);
@@ -34,8 +34,8 @@ public class Person {
         }
     }
 
-    public static double readHeight(Scanner scanner) throws IncorrectFieldException {
-        String heightString = scanner.next().trim();
+    public static double readHeight(Iterator<String> iterator) throws IncorrectFieldException {
+        String heightString = iterator.next().trim();
         double height;
 
         try {
@@ -49,8 +49,8 @@ public class Person {
         return height;
     }
 
-    public static int readWeight(Scanner scanner) throws IncorrectFieldException {
-        String weightString = scanner.next().trim();
+    public static int readWeight(Iterator<String> iterator) throws IncorrectFieldException {
+        String weightString = iterator.next().trim();
         int weight;
 
         try {
@@ -64,8 +64,8 @@ public class Person {
         return weight;
     }
 
-    public static String readPassportID(Scanner scanner) throws IncorrectFieldException {
-        String passportID = scanner.next().trim();
+    public static String readPassportID(Iterator<String> iterator) throws IncorrectFieldException {
+        String passportID = iterator.next().trim();
 
         if (passportID.length() == 0 || passportID.equals("null")) return null;
         if (passportID.length() < 10) throw new IncorrectFieldException(passportID);
@@ -74,6 +74,11 @@ public class Person {
     }
 
     public String toCSV() {
+        String passportID = this.passportID;
+        if (passportID != null && (passportID.contains("\"") || passportID.contains(","))) {
+            passportID = "\"" + passportID.replaceAll("\"", "\"\"") + "\"";
+        }
+
         return birthday + ", " + height + ", " + weight + ", " + passportID;
     }
 

@@ -2,7 +2,7 @@ package lab5;
 
 import lab5.exceptions.IncorrectFieldException;
 
-import java.util.Scanner;
+import java.util.Iterator;
 
 public class Reader {
     public final String name;
@@ -14,6 +14,6 @@ public class Reader {
     }
 
     public interface Readable {
-        Object read(Scanner scanner) throws IncorrectFieldException;
+        Object read(Iterator<String> iterator) throws IncorrectFieldException;
     }
 }

@@ -1,6 +1,6 @@
 package lab5;
 
-import lab5.ticket.TicketReader;
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {

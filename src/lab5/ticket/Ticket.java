@@ -2,7 +2,10 @@ package lab5.ticket;
 
 import lab5.exceptions.IncorrectFieldException;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Objects;
+
 
 public class Ticket implements Comparable<Ticket>{
     private final long id;
@@ -64,8 +67,8 @@ public class Ticket implements Comparable<Ticket>{
         this.person = person;
     }
 
-    public static long readId(Scanner scanner) throws IncorrectFieldException {
-        String idString = scanner.next().trim();
+    public static long readId(Iterator<String> iterator) throws IncorrectFieldException {
+        String idString = iterator.next().trim();
 
         try {
             return Long.parseLong(idString);
@@ -74,8 +77,8 @@ public class Ticket implements Comparable<Ticket>{
         }
     }
 
-    public static Date readCreationDate(Scanner scanner) throws IncorrectFieldException {
-        String creationDateString = scanner.next().trim();
+    public static Date readCreationDate(Iterator<String> iterator) throws IncorrectFieldException {
+        String creationDateString = iterator.next().trim();
 
         try {
             return new Date(Long.parseLong(creationDateString));
@@ -84,16 +87,16 @@ public class Ticket implements Comparable<Ticket>{
         }
     }
 
-    public static String readName(Scanner scanner) throws IncorrectFieldException {
-        String name = scanner.next().trim();
+    public static String readName(Iterator<String> iterator) throws IncorrectFieldException {
+        String name = iterator.next().trim();
 
         if (name.isEmpty()) throw new IncorrectFieldException(name);
 
         return name;
     }
 
-    public static Integer readPrice(Scanner scanner) throws IncorrectFieldException {
-        String priceString = scanner.next().trim();
+    public static Integer readPrice(Iterator<String> iterator) throws IncorrectFieldException {
+        String priceString = iterator.next().trim();
         int price;
 
         try {
@@ -107,8 +110,8 @@ public class Ticket implements Comparable<Ticket>{
         return price;
     }
 
-    public static TicketType readType(Scanner scanner) throws IncorrectFieldException {
-        String typeString = scanner.next().trim();
+    public static TicketType readType(Iterator<String> iterator) throws IncorrectFieldException {
+        String typeString = iterator.next().trim();
 
         try {
             return TicketType.valueOf(typeString.toUpperCase());
@@ -118,6 +121,11 @@ public class Ticket implements Comparable<Ticket>{
     }
 
     public String toCSV() {
+        String name = this.name;
+        if (name != null &&(name.contains("\"") || name.contains(","))) {
+            name = "\"" + name.replaceAll("\"", "\"\"") + "\"";
+        }
+
         return name + ", " + price + ", " + type + ", "  + coordinates + ", " + person.toCSV() + ", " + id + ", " + creationDate.getTime();
     }
 

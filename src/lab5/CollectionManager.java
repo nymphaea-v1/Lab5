@@ -1,5 +1,7 @@
 package lab5;
 
+import lab5.CSVParser.CSVParserButBetter;
+import lab5.CSVParser.CSVParserButBetter.CSVParsingException;
 import lab5.exceptions.IncorrectFieldException;
 import lab5.ticket.Ticket;
 import lab5.ticket.TicketReader;
@@ -78,21 +80,24 @@ public class CollectionManager {
     }
 
     public void addFromFile(Path filePath) throws IOException {
-        Scanner scanner = new Scanner(filePath);
+        CSVParserButBetter parser = new CSVParserButBetter(filePath);
         long key = 0;
 
-        while (scanner.hasNext()) {
+        while (parser.hasNext()) {
             try {
-                Ticket ticket = TicketReader.readTicket(new Scanner(scanner.nextLine()).useDelimiter(","));
+                Ticket ticket = TicketReader.readTicket(parser);
                 if (!setElement(key++, ticket)) {
                     System.out.println("Elements with the same id were found, the last one was skipped");
                 }
-            } catch (IncorrectFieldException e) {
+            } catch (IncorrectFieldException | CSVParsingException e) {
+                if (!parser.lineSkip) parser.skipLine();
                 System.out.println("Object initialization failed: " + e.getMessage());
+            } catch (NoSuchElementException e) {
+                System.out.println("Object initialization failed: the end of file");
             }
         }
 
-        scanner.close();
+        parser.close();
     }
 
     public void clear() {

@@ -30,20 +30,20 @@ public class TicketReader {
         ticketExtraReaders.add(new Reader("ticket creation date", Ticket::readCreationDate));
     }
 
-    public static Ticket readTicket(Scanner scanner) throws IncorrectFieldException {
-        List<Object> ticketFields = readObjectFields(scanner, ticketBasicReaders);
-        ticketFields.add(createCoordinates(readObjectFields(scanner, coordinatesReaders)));
-        ticketFields.add(createPerson(readObjectFields(scanner, personReaders)));
-        ticketFields.addAll(readObjectFields(scanner, ticketExtraReaders));
+    public static Ticket readTicket(Iterator<String> iterator) throws IncorrectFieldException {
+        List<Object> ticketFields = readObjectFields(iterator, ticketBasicReaders);
+        ticketFields.add(createCoordinates(readObjectFields(iterator, coordinatesReaders)));
+        ticketFields.add(createPerson(readObjectFields(iterator, personReaders)));
+        ticketFields.addAll(readObjectFields(iterator, ticketExtraReaders));
 
         return createTicket(ticketFields);
     }
 
-    private static List<Object> readObjectFields(Scanner scanner, List<Reader> readers) throws IncorrectFieldException {
+    private static List<Object> readObjectFields(Iterator<String> iterator, List<Reader> readers) throws IncorrectFieldException {
         List<Object> fields = new ArrayList<>();
         for (Reader reader : readers) {
-            if (!(scanner.hasNext())) throw new IncorrectFieldException("not enough fields");
-            fields.add(reader.reader.read(scanner));
+            if (!(iterator.hasNext())) throw new IncorrectFieldException("not enough fields");
+            fields.add(reader.reader.read(iterator));
         }
         return fields;
     }
