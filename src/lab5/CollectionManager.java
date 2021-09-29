@@ -46,8 +46,8 @@ public class CollectionManager {
     }
 
     public Ticket getElementById(long id) {
-        for (Map.Entry<Long, Ticket> entry : collection.entrySet()) {
-            if (entry.getValue().getId() == id) return entry.getValue();
+        for (Map.Entry<Long, Ticket> element : collection.entrySet()) {
+            if (element.getValue().getId() == id) return element.getValue();
         }
 
         return null;
@@ -81,15 +81,14 @@ public class CollectionManager {
 
     public void addFromFile(Path filePath) throws IOException {
         CSVParserButBetter parser = new CSVParserButBetter(filePath);
-        long key = 0;
-
         while (parser.hasNext()) {
             try {
+                Long key = Long.parseLong(parser.next());
                 Ticket ticket = TicketReader.readTicket(parser);
-                if (!setElement(key++, ticket)) {
+                if (!setElement(key, ticket)) {
                     System.out.println("Elements with the same id were found, the last one was skipped");
                 }
-            } catch (IncorrectFieldException | CSVParsingException e) {
+            } catch (IncorrectFieldException | CSVParsingException | NumberFormatException e) {
                 if (!parser.lineSkip) parser.skipLine();
                 System.out.println("Object initialization failed: " + e.getMessage());
             } catch (NoSuchElementException e) {
@@ -108,25 +107,21 @@ public class CollectionManager {
         FileOutputStream outputStream = new FileOutputStream(filePath.toFile());
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
 
-        outputStreamWriter.write(convertToCSV());
+        for (Map.Entry<Long, Ticket> element : collection.entrySet()) {
+            outputStreamWriter.write(convertToCSV(element) + "\n");
+        }
+
         outputStreamWriter.close();
     }
 
     public void print() {
-        for (Map.Entry<Long, Ticket> entry : collection.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
+        for (Map.Entry<Long, Ticket> element : collection.entrySet()) {
+            System.out.println(element.getKey() + ": " + element.getValue());
         }
     }
 
-    private String convertToCSV() {
-        StringBuilder stringBuilder = new StringBuilder(getSize() * 100);
-
-        for (Ticket ticket : collection.values()) {
-            stringBuilder.append(ticket.toCSV());
-            stringBuilder.append("\n");
-        }
-
-        return stringBuilder.toString();
+    private static String convertToCSV(Map.Entry<Long, Ticket> element) {
+        return element.getKey() + ", " + element.getValue().toCSV();
     }
 
     private static void sortByCreationDate(CollectionManager collectionManager) {
@@ -136,6 +131,6 @@ public class CollectionManager {
 
         collectionClone.entrySet().stream()
             .sorted(Comparator.comparing(n -> n.getValue().getCreationDate()))
-            .forEach(entry -> collectionManager.setElement(entry.getKey(), entry.getValue()));
+            .forEach(element -> collectionManager.setElement(element.getKey(), element.getValue()));
     }
 }
