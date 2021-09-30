@@ -7,6 +7,15 @@ import lab5.ticket.Ticket;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Basic command with an argument.
+ * Displays all the elements of the collection whose name starts with the given substring.
+ *
+ * @see lab5.commands.Command
+ * @see lab5.CommandManager
+ * @see CollectionManager
+ */
+
 public class FilterStartsWithName extends Command {
     private final CollectionManager collectionManager;
 

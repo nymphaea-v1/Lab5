@@ -5,6 +5,15 @@ import lab5.exceptions.IncorrectArgumentException;
 
 import java.io.FileNotFoundException;
 
+/**
+ * Basic command with an argument.
+ * Executes the script from the specified file.
+ *
+ * @see lab5.commands.Command
+ * @see lab5.CommandManager
+ * @see InputReader
+ */
+
 public class ExecuteScript extends Command {
     private final InputReader inputReader;
 

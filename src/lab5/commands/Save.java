@@ -4,6 +4,15 @@ import lab5.CollectionManager;
 
 import java.io.IOException;
 
+/**
+ * Basic command.
+ * Saves the entire collection into its file.
+ *
+ * @see lab5.commands.Command
+ * @see lab5.CommandManager
+ * @see CollectionManager
+ */
+
 public class Save extends Command {
     private final CollectionManager collectionManager;
 

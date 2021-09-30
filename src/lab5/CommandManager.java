@@ -1,11 +1,15 @@
 package lab5;
 
 import lab5.commands.*;
-import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.NoSuchCommandException;
 import lab5.exceptions.IncorrectArgumentException;
 
 import java.util.*;
+
+/**
+ * This class represents a manager that creates a set of commands connected to the specified collection
+ * and allows user to manage it with given commands.
+ */
 
 public class CommandManager {
     private final HashMap<String, Command> commandMap = new HashMap<>();
@@ -14,8 +18,15 @@ public class CommandManager {
         return commandMap.values();
     }
 
+    /**
+     * Sets a list of commands and creates command manager.
+     *
+     * @param collectionManager manager of the collection that gives access for commands to collection management
+     * @param inputReader input reader that gives access for complex commands to reading methods
+     */
+
     public CommandManager(CollectionManager collectionManager, InputReader inputReader) {
-        setCommand(new Help(commandMap.values()));
+        setCommand(new Help(this));
         setCommand(new Info(collectionManager));
         setCommand(new Show(collectionManager));
         setCommand(new Clear(collectionManager));
@@ -36,7 +47,16 @@ public class CommandManager {
         setCommand(new Insert(collectionManager, inputReader));
     }
 
-    public void execute(String commandName, String argument) throws CancelCommandException, IncorrectArgumentException, NoSuchCommandException {
+    /**
+     * Executes the specified command by it's name.
+     *
+     * @param commandName name of the command to be executed
+     * @param argument argument of the command
+     * @throws IncorrectArgumentException thrown if an argument is not correct
+     * @throws NoSuchCommandException thrown if there is no command with the specified name
+     */
+
+    public void execute(String commandName, String argument) throws IncorrectArgumentException, NoSuchCommandException {
         Command command = commandMap.get(commandName);
         if (command == null) throw new NoSuchCommandException();
         command.execute(argument);

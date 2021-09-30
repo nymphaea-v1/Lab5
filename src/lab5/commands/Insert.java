@@ -2,9 +2,18 @@ package lab5.commands;
 
 import lab5.CollectionManager;
 import lab5.InputReader;
-import lab5.exceptions.CancelCommandException;
 import lab5.exceptions.IncorrectArgumentException;
 import lab5.ticket.TicketReader;
+
+/**
+ * Complex command with an argument.
+ * Inserts the new element with the specified key in the collection.
+ *
+ * @see lab5.commands.Command
+ * @see lab5.CommandManager
+ * @see CollectionManager
+ * @see InputReader
+ */
 
 public class Insert extends Command {
     private final CollectionManager collectionManager;
@@ -17,7 +26,7 @@ public class Insert extends Command {
     }
 
     @Override
-    public void execute(String keyString) throws IncorrectArgumentException, CancelCommandException {
+    public void execute(String keyString) throws IncorrectArgumentException {
         if (keyString == null) throw new IncorrectArgumentException("no argument");
 
         Long key;

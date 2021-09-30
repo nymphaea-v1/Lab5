@@ -2,12 +2,21 @@ package lab5.commands;
 
 import lab5.CollectionManager;
 import lab5.InputReader;
-import lab5.exceptions.CancelCommandException;
 import lab5.ticket.Person;
 import lab5.ticket.Ticket;
 import lab5.ticket.TicketReader;
 
 import java.util.Map;
+
+/**
+ * Complex command.
+ * Removes all elements whose person is lower than the given one.
+ *
+ * @see lab5.commands.Command
+ * @see lab5.CommandManager
+ * @see CollectionManager
+ * @see InputReader
+ */
 
 public class RemoveAnyByPerson extends Command {
     private final CollectionManager collectionManager;
@@ -20,7 +29,7 @@ public class RemoveAnyByPerson extends Command {
     }
 
     @Override
-    public void execute(String argument) throws CancelCommandException {
+    public void execute(String argument) {
         Person person = TicketReader.readPerson(inputReader);
 
         for (Map.Entry<Long, Ticket> entry : collectionManager.getEntrySet()) {

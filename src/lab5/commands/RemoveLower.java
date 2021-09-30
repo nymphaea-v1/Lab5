@@ -2,9 +2,18 @@ package lab5.commands;
 
 import lab5.CollectionManager;
 import lab5.InputReader;
-import lab5.exceptions.CancelCommandException;
 import lab5.ticket.Ticket;
 import lab5.ticket.TicketReader;
+
+/**
+ * Complex command.
+ * Removes all elements that lower than the given one.
+ *
+ * @see lab5.commands.Command
+ * @see lab5.CommandManager
+ * @see CollectionManager
+ * @see InputReader
+ */
 
 public class RemoveLower extends Command {
     private final CollectionManager collectionManager;
@@ -17,7 +26,7 @@ public class RemoveLower extends Command {
     }
 
     @Override
-    public void execute(String argument) throws CancelCommandException {
+    public void execute(String argument) {
         Ticket ticket = TicketReader.readNewTicket(inputReader, collectionManager.getNextId());
         int sizeBefore = collectionManager.getSize();
 

@@ -4,6 +4,10 @@ import lab5.exceptions.IncorrectFieldException;
 
 import java.util.Iterator;
 
+/**
+ * Simple class representation of a named reader
+ */
+
 public class Reader {
     public final String name;
     public final Readable reader;

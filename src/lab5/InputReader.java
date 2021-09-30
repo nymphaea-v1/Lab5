@@ -6,6 +6,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+/**
+ * Simple class that is used to read commands and their arguments from the console or the specified files.
+ * Uses a list of scanners to manage its input source.
+ *
+ * @see CommandManager
+ */
+
 public class InputReader {
     private final LinkedList<Scanner> scanners;
     private final LinkedList<String> filePaths;
@@ -18,6 +25,12 @@ public class InputReader {
 
         scanners.add(new Scanner(System.in).useDelimiter("\n"));
     }
+
+    /**
+     * Starts reading input from console and processing it to command manager
+     *
+     * @param commandManager a manager that executes the entered command
+     */
 
     public void startReading(CommandManager commandManager) {
         Scanner consoleScanner = new Scanner(System.in).useDelimiter("\n");
@@ -73,12 +86,23 @@ public class InputReader {
         }
     }
 
+    /**
+     * Stops reading input. Clears its list of scanners.
+     */
+
     public void stopReading() {
         scanners.clear();
         filePaths.clear();
 
         fromConsole = true;
     }
+
+    /**
+     * Adds a script file to read commands from
+     *
+     * @param path a path name to the script file
+     * @throws FileNotFoundException if source is not found
+     */
 
     public void addToScan(String path) throws FileNotFoundException {
         File file = new File(path);
@@ -99,12 +123,21 @@ public class InputReader {
         fromConsole = false;
     }
 
+    /**
+     * Removes the last scanner from its list
+     */
+
     public void removeLastScanner() {
         scanners.removeLast().close();
         filePaths.removeLast();
 
         if (filePaths.isEmpty()) fromConsole = true;
     }
+
+    /**
+     * Goes back to reading input from the console.
+     * Removes all scanners except the last one, which is the console scanner.
+     */
 
     private void toConsole() {
         Scanner scanner = scanners.getFirst();
@@ -116,6 +149,14 @@ public class InputReader {
 
         fromConsole = true;
     }
+
+    /**
+     * Reads an object from the last scanner.
+     * This method is used by commands from command manager to read a complex argument.
+     *
+     * @param readers a list of readers performing operations with the last scanner
+     * @return a list of fields that can be used to construct an object
+     */
 
     public List<Object> readObject(List<Reader> readers) {
         return fromConsole ? readObjectConsole(readers) : readObjectFile(readers);

@@ -5,6 +5,15 @@ import lab5.exceptions.IncorrectArgumentException;
 import lab5.ticket.Ticket;
 import lab5.ticket.TicketType;
 
+/**
+ * Basic command with an argument.
+ * Displays the number of elements with the given ticket type.
+ *
+ * @see lab5.commands.Command
+ * @see lab5.CommandManager
+ * @see CollectionManager
+ */
+
 public class CountByType extends Command {
     private final CollectionManager collectionManager;
 

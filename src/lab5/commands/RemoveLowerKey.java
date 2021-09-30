@@ -3,6 +3,15 @@ package lab5.commands;
 import lab5.CollectionManager;
 import lab5.exceptions.IncorrectArgumentException;
 
+/**
+ * Basic command with an argument.
+ * Allows removing from the collection all elements whose key is lower than the given one.
+ *
+ * @see lab5.commands.Command
+ * @see lab5.CommandManager
+ * @see CollectionManager
+ */
+
 public class RemoveLowerKey extends Command {
     private final CollectionManager collectionManager;
 

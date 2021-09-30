@@ -3,6 +3,15 @@ package lab5.commands;
 import lab5.CollectionManager;
 import lab5.exceptions.IncorrectArgumentException;
 
+/**
+ * Basic command with an argument.
+ * Allows removing one element from the collection by a given key.
+ *
+ * @see lab5.commands.Command
+ * @see lab5.CommandManager
+ * @see CollectionManager
+ */
+
 public class RemoveKey extends Command {
     private final CollectionManager collectionManager;
 

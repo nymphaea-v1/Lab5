@@ -8,6 +8,15 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
 
+/**
+ * Basic command.
+ * Displays creation and last modified time of the collection's file, the collection type and the number of elements.
+ *
+ * @see lab5.commands.Command
+ * @see lab5.CommandManager
+ * @see CollectionManager
+ */
+
 public class Info extends Command {
     private final CollectionManager collectionManager;
     private final static String infoPattern = "Info about this collection:\nType: LinkedHashMap\nCreation date: %s\nLast modified date: %s\nNumber of elements: %d\n";
