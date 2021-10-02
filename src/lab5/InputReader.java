@@ -74,7 +74,13 @@ public class InputReader {
                     else if (e instanceof IncorrectArgumentException) {
                         System.out.println("Try again or type 2? to cancel: ");
 
-                        argument = scanner.nextLine();
+                        try {
+                            argument = scanner.nextLine();
+                        }  catch (NoSuchElementException ei) {
+                            stopReading();
+                            return;
+                        }
+
                         if (!argument.equals("2?")) continue;
 
                         System.out.println("Current command execution has been cancelled");
@@ -198,6 +204,8 @@ public class InputReader {
                     String message = e.getMessage().trim();
                     if (message.equals("2?")) throw new CancelCommandException();
                     System.out.println("Invalid input (" + message + "). Try again:");
+                } catch (NoSuchElementException e) {
+                    throw new CancelCommandException();
                 }
             }
 
